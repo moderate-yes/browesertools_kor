@@ -1,0 +1,15 @@
+{
+  "total": 3305,
+  "splits": {
+    "train": 2622,
+    "validation": 347,
+    "test": 336
+  },
+  "tools": {
+    "convert_currency": 240,
+    "convert_number": 925,
+    "convert_unit": 1880,
+    "request_clarification": 160,
+    "unsupported_request": 100
+  }
+}

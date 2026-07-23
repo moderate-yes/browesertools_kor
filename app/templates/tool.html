@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}{{ seo.title }}{% endblock %}
+{% block body_class %}tool-page compact-tool theme-{{ tool.color }}{% endblock %}
+{% block content %}
+<main class="tool-main">
+  <section class="compact-workspace">
+    <div class="form-panel">
+      {% if tool.slug != "info" %}<h1 class="visually-hidden">{{ tool.title }}</h1>{% endif %}
+      {% if tool.slug == "english-number" %}
+      <form data-tool="english-number">
+        <label for="english-value">숫자와 단위를 입력하세요</label>
+        <input id="english-value" name="value" placeholder="1 billion, 1빌리언 또는 10억" required autocomplete="off" autofocus>
+        <p class="example-line"><button type="button" data-example="1 billion">1 billion</button><button type="button" data-example="1빌리언">1빌리언</button><button type="button" data-example="10억">10억</button><button type="button" data-example="100000000">100000000</button></p>
+        <button class="submit-button" type="submit">숫자 단위 변환 <span>→</span></button>
+      </form>
+      {% elif tool.slug == "margin" %}
+      <form data-tool="margin">
+        <div class="field-grid">
+          <label>판매가<input name="price" inputmode="text" placeholder="십만원" required autofocus></label>
+          <label>원가<input name="cost" inputmode="text" placeholder="사만오천원" required></label>
+          <label>할인액<input name="discount" inputmode="text" value="0"></label>
+          <label>수수료율 (%)<input name="fee_rate" inputmode="decimal" value="0"></label>
+          <label>배송비<input name="shipping" inputmode="text" value="0"></label>
+        </div>
+        <button class="submit-button" type="submit">실제 수익 계산 <span>→</span></button>
+      </form>
+      {% elif tool.slug == "unit" %}
+      <form data-tool="unit">
+        <label for="unit-value">숫자와 단위를 함께 입력하세요</label>
+        <input id="unit-value" name="value" placeholder="예: 1센치, 일 인치, 34평" required autofocus autocomplete="off">
+        <p class="example-line"><button type="button" data-example="1센치">1센치</button><button type="button" data-example="일 인치">일 인치</button><button type="button" data-example="34평">34평</button></p>
+        <button class="submit-button" type="submit">단위 변환 <span>→</span></button>
+      </form>
+      {% elif tool.slug == "clean-list" %}
+      <form data-tool="clean-list">
+        <label for="list-text">명단을 붙여 넣으세요</label>
+        <textarea id="list-text" name="text" rows="8" maxlength="50000" placeholder="김하나&#10;이둘&#10;김 하나" required autofocus></textarea>
+        <button class="submit-button" type="submit">중복 제거하고 정리 <span>→</span></button>
+      </form>
+      {% elif tool.slug == "character-count" %}
+      <form data-tool="character-count" data-live-count>
+        <label for="count-text">글자 수를 셀 내용을 입력하세요</label>
+        <textarea id="count-text" name="text" rows="10" maxlength="100000" placeholder="여기에 내용을 입력하거나 붙여 넣으세요." autofocus></textarea>
+        <button class="submit-button" type="submit">글자 수 세기 <span>→</span></button>
+      </form>
+      {% elif tool.slug == "currency" %}
+      <form data-tool="currency">
+        <label for="currency-amount">금액과 통화를 입력하세요</label>
+        <input id="currency-amount" name="amount" inputmode="text" placeholder="100달러 또는 원빌리언 달러" required autofocus autocomplete="off">
+        <p class="example-line"><button type="button" data-example="100달러">100달러</button><button type="button" data-example="원빌리언 달러">원빌리언 달러</button><button type="button" data-example="백만원">백만원</button><button type="button" data-example="100">100</button></p>
+        <p class="field-help">최신 영업일 기준환율 · 실제 환전 금액과 다를 수 있습니다.</p>
+        <button class="submit-button" type="submit">최신 환율로 계산 <span>→</span></button>
+      </form>
+      {% elif tool.slug == "ai-converter" %}
+      <div class="ai-model-status" data-model-status data-state="loading" aria-live="polite">
+        <i aria-hidden="true"></i><span><strong>모델 준비 중</strong><small>상태를 확인하고 있습니다</small></span>
+      </div>
+      <form data-auto-convert>
+        <label for="auto-text">변환하고 싶은 내용을 입력하세요</label>
+        <input id="auto-text" name="text" maxlength="30" placeholder="1센치를 미터로, 100달러, 삼십사평" required autofocus autocomplete="off">
+        <p class="example-line"><button type="button" data-example="1센치를 미터로">1센치를 미터로</button><button type="button" data-example="1미터를 인치로">1미터를 인치로</button><button type="button" data-example="100달러">100달러</button></p>
+        <button class="submit-button" type="submit" disabled>AI로 변환 <span>→</span></button>
+      </form>
+      <div class="result" aria-live="polite" hidden></div>
+      <section class="ai-study" aria-labelledby="ai-study-title">
+        <header>
+          <p>FUNCTIONGEMMA 270M</p>
+          <h2 id="ai-study-title">빠르게 이해하고,<br>정확하게 계산하도록.</h2>
+          <span>긴 답변을 만드는 대신 입력 의도를 함수 호출로 바꾸고, 검증된 계산기가 결과를 계산하는 구조입니다.</span>
+        </header>
+
+        <div class="ai-stat-grid" aria-label="FunctionGemma 학습 데이터 현황">
+          <article><strong>3,305</strong><span>전체 예시</span></article>
+          <article><strong>2,622</strong><span>학습 데이터</span></article>
+          <article><strong>347</strong><span>검증 데이터</span></article>
+          <article><strong>336</strong><span>테스트 데이터</span></article>
+        </div>
+
+        <div class="ai-study-block">
+          <p class="ai-section-label">DATA</p>
+          <h3>무엇을 학습하나요?</h3>
+          <p>숫자 단위, 원화·달러, 길이·면적·무게·온도 변환을 중심으로 띄어쓰기, 한글 수사, 혼합 표기와 짧은 구어체를 포함했습니다.</p>
+          <dl class="ai-data-list">
+            <div><dt>숫자 단위</dt><dd>925개</dd></div>
+            <div><dt>통화 환산</dt><dd>240개</dd></div>
+            <div><dt>생활 단위</dt><dd>1,880개</dd></div>
+            <div><dt>추가 질문</dt><dd>160개</dd></div>
+            <div><dt>지원 밖 요청</dt><dd>100개</dd></div>
+          </dl>
+          <p class="ai-caption">예: 숫자만 입력한 <b>100</b>은 억지로 추측하지 않고 “어떤 단위로 변환할까요?”라고 다시 묻도록 학습합니다.</p>
+        </div>
+
+        <div class="ai-study-block">
+          <p class="ai-section-label">TRAIN</p>
+          <h3>어떻게 학습하나요?</h3>
+          <ol class="ai-process">
+            <li><b>01</b><span><strong>함수 선택</strong>숫자·통화·생활 단위·추가 질문 중 알맞은 동작을 고릅니다.</span></li>
+            <li><b>02</b><span><strong>미세조정</strong>FunctionGemma 270M을 학습 데이터로 맞춤 조정합니다.</span></li>
+            <li><b>03</b><span><strong>분리 평가</strong>학습에 쓰지 않은 검증·테스트 입력으로 정확도를 확인합니다.</span></li>
+            <li><b>04</b><span><strong>브라우저 배포</strong>통과한 모델만 ONNX q4로 줄여 WebGPU에서 실행합니다.</span></li>
+          </ol>
+        </div>
+
+        <div class="ai-study-block">
+          <p class="ai-section-label">RESULT</p>
+          <h3>최신 테스트 결과</h3>
+          <div class="ai-result-card ai-result-latest">
+            <div><span>FunctionGemma 270M · 함수 선택 정확도</span><strong>100.0%</strong><small>독립 테스트 336개 · 336개 정답 · 실패 0개 · 2026.07.23</small></div>
+          </div>
+          <dl class="ai-data-list ai-eval-breakdown" aria-label="FunctionGemma 최신 도구별 테스트 결과">
+            <div><dt>숫자 단위</dt><dd>94 / 94</dd></div>
+            <div><dt>통화 환산</dt><dd>26 / 26</dd></div>
+            <div><dt>생활 단위</dt><dd>187 / 187</dd></div>
+            <div><dt>추가 질문</dt><dd>16 / 16</dd></div>
+            <div><dt>지원 밖 요청</dt><dd>13 / 13</dd></div>
+          </dl>
+          <p class="ai-caption">Hugging Face에 공개된 최신 독립 평가 결과입니다. ONNX q4 브라우저 모델은 같은 맞춤 학습 가중치를 사용하며, 실제 기기 속도는 위 변환 결과에 표시됩니다.</p>
+        </div>
+
+        <div class="ai-study-block">
+          <p class="ai-section-label">SAMPLES</p>
+          <h3>테스트 데이터 예시 30개</h3>
+          <p>출력값은 최종 계산값이 아니라 FunctionGemma가 선택한 함수입니다. 선택된 함수가 이후 숫자 계산과 안내 문구를 처리합니다.</p>
+          <div class="ai-example-table-wrap">
+            <table class="ai-example-table">
+              <thead><tr><th scope="col">입력값</th><th scope="col">출력값</th></tr></thead>
+              <tbody>
+                <tr data-eval-example><td>0.5 thousand 한국식으로</td><td>숫자 단위 · <code>convert_number</code></td></tr>
+                <tr data-eval-example><td>1.2 밀리언 변환</td><td>숫자 단위 · <code>convert_number</code></td></tr>
+                <tr data-eval-example><td>100 트릴리언</td><td>숫자 단위 · <code>convert_number</code></td></tr>
+                <tr data-eval-example><td>2 사우전드</td><td>숫자 단위 · <code>convert_number</code></td></tr>
+                <tr data-eval-example><td>백 million 변환</td><td>숫자 단위 · <code>convert_number</code></td></tr>
+                <tr data-eval-example><td>십사우전드 숫자 단위 바꿔줘</td><td>숫자 단위 · <code>convert_number</code></td></tr>
+                <tr data-eval-example><td>1 달러를 원화로 얼마야</td><td>통화 환산 · <code>convert_currency</code></td></tr>
+                <tr data-eval-example><td>250달러 얼마야</td><td>통화 환산 · <code>convert_currency</code></td></tr>
+                <tr data-eval-example><td>KRW 원빌리언 USD로 얼마야</td><td>통화 환산 · <code>convert_currency</code></td></tr>
+                <tr data-eval-example><td>USD 만원 KRW로 바꿔줘</td><td>통화 환산 · <code>convert_currency</code></td></tr>
+                <tr data-eval-example><td>백만원 달러를 원화로</td><td>통화 환산 · <code>convert_currency</code></td></tr>
+                <tr data-eval-example><td>원빌리언 달러를 원화로 바꿔줘</td><td>통화 환산 · <code>convert_currency</code></td></tr>
+                <tr data-eval-example><td>1 미터 피트 변환 바꿔줘</td><td>생활 단위 · <code>convert_unit</code></td></tr>
+                <tr data-eval-example><td>10제곱미터를 평로</td><td>생활 단위 · <code>convert_unit</code></td></tr>
+                <tr data-eval-example><td>1인치 해줘</td><td>생활 단위 · <code>convert_unit</code></td></tr>
+                <tr data-eval-example><td>34섭씨를 화씨로 해줘</td><td>생활 단위 · <code>convert_unit</code></td></tr>
+                <tr data-eval-example><td>70온스를 그램로</td><td>생활 단위 · <code>convert_unit</code></td></tr>
+                <tr data-eval-example><td>천화씨를 섭씨로 해줘</td><td>생활 단위 · <code>convert_unit</code></td></tr>
+                <tr data-eval-example><td>1 변환</td><td>추가 질문 · <code>request_clarification</code></td></tr>
+                <tr data-eval-example><td>34은 얼마야</td><td>추가 질문 · <code>request_clarification</code></td></tr>
+                <tr data-eval-example><td>백 바꿔줘</td><td>추가 질문 · <code>request_clarification</code></td></tr>
+                <tr data-eval-example><td>원 바꿔줘</td><td>추가 질문 · <code>request_clarification</code></td></tr>
+                <tr data-eval-example><td>제곱미터는 얼마야</td><td>추가 질문 · <code>request_clarification</code></td></tr>
+                <tr data-eval-example><td>화씨 변환</td><td>추가 질문 · <code>request_clarification</code></td></tr>
+                <tr data-eval-example><td>건강 상담 부탁해</td><td>지원 밖 요청 · <code>unsupported_request</code></td></tr>
+                <tr data-eval-example><td>게임 공략</td><td>지원 밖 요청 · <code>unsupported_request</code></td></tr>
+                <tr data-eval-example><td>레시피 알려줘</td><td>지원 밖 요청 · <code>unsupported_request</code></td></tr>
+                <tr data-eval-example><td>여행 일정 해줘</td><td>지원 밖 요청 · <code>unsupported_request</code></td></tr>
+                <tr data-eval-example><td>오늘 뉴스 가능해?</td><td>지원 밖 요청 · <code>unsupported_request</code></td></tr>
+                <tr data-eval-example><td>코딩 질문 해줘</td><td>지원 밖 요청 · <code>unsupported_request</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ai-study-block ai-limitations">
+          <p class="ai-section-label">LIMITS</p>
+          <h3>100%여도 불안한 부분</h3>
+          <ul class="ai-caveats">
+            <li><b>01</b><span><strong>고정된 336개 안에서의 결과</strong>100%는 이 테스트 세트에서 모두 맞았다는 뜻이지, 모든 실제 입력을 맞힌다는 뜻은 아닙니다.</span></li>
+            <li><b>02</b><span><strong>합성 패턴의 영향</strong>학습·평가 문장이 비슷한 생성 규칙을 공유해 실사용자의 오타, 사투리, 새로운 혼합 표현은 충분히 반영되지 않았을 수 있습니다.</span></li>
+            <li><b>03</b><span><strong>분류 수의 차이</strong>생활 단위는 187개지만 지원 밖 요청은 13개뿐이라, 적은 분류의 100%는 상대적으로 불확실성이 큽니다.</span></li>
+            <li><b>04</b><span><strong>함수 선택만 평가</strong>환율의 최신성, 계산 결과, 네트워크 오류까지 포함한 서비스 전체 정확도가 아니라 올바른 함수를 골랐는지를 측정했습니다.</span></li>
+            <li><b>05</b><span><strong>브라우저용 q4 양자화</strong>공개 평가는 미세조정 원본 모델 기준입니다. ONNX q4 변환 후에도 같은 336개를 별도로 전수 평가해야 완전히 같은 정확도라고 말할 수 있습니다.</span></li>
+          </ul>
+          <p class="ai-caption"><b>따라서 100%는 “현재 독립 테스트 336개에서 함수 선택 오류 0개”로 해석해야 합니다.</b> 실제 입력 범위를 계속 넓혀 재평가할 예정입니다.</p>
+        </div>
+
+        <div class="ai-study-block ai-local-note">
+          <p class="ai-section-label">LOCAL FIRST</p>
+          <h3>한 번 받고, 다음부터 빠르게.</h3>
+          <p>첫 방문에는 모델을 내려받지만 이후에는 브라우저 캐시를 사용합니다. 사이트가 열린 뒤 백그라운드에서 모델을 준비하고 짧은 워밍업을 실행해 첫 변환 대기 시간을 줄일 예정입니다.</p>
+        </div>
+      </section>
+      {% else %}
+      <section class="info-panel" aria-labelledby="info-title">
+        <p>ABOUT DANSUM</p>
+        <h1 id="info-title">필요한 변환을<br>빠르게.</h1>
+        <dl>
+          <div><dt>개인정보</dt><dd>입력한 내용은 별도로 저장하지 않습니다.</dd></div>
+          <div><dt>환율</dt><dd>최신 영업일 기준환율이며 실제 환전 금액과 다를 수 있습니다.</dd></div>
+          <div><dt>AI 변환</dt><dd>분류와 변환은 사용자의 브라우저에서 처리합니다.</dd></div>
+        </dl>
+      </section>
+      {% endif %}
+      {% if tool.slug not in ["ai-converter", "info"] %}<div class="result" aria-live="polite" hidden></div>{% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

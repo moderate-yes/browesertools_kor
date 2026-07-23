@@ -1,0 +1,46 @@
+{
+  "dataset_count": 150,
+  "train_count": 120,
+  "test_count": 30,
+  "split": "라벨별 5번째 예시를 검증용으로 분리한 고정 80:20 홀드아웃",
+  "classes": [
+    "area",
+    "currency",
+    "english_number",
+    "korean_amount",
+    "length",
+    "temperature",
+    "weight"
+  ],
+  "vocabulary_size": 2708,
+  "results": [
+    {
+      "model": "다항 나이브 베이즈",
+      "accuracy": 0.8667,
+      "macro_f1": 0.8683,
+      "average_latency_ms": 0.0353,
+      "serialized_size_kb": 254.4,
+      "correct": 26,
+      "test_count": 30
+    },
+    {
+      "model": "TF-IDF 중심점",
+      "accuracy": 0.8667,
+      "macro_f1": 0.8683,
+      "average_latency_ms": 0.0377,
+      "serialized_size_kb": 146.0,
+      "correct": 26,
+      "test_count": 30
+    },
+    {
+      "model": "선형 퍼셉트론",
+      "accuracy": 0.8667,
+      "macro_f1": 0.8674,
+      "average_latency_ms": 0.0322,
+      "serialized_size_kb": 160.1,
+      "correct": 26,
+      "test_count": 30
+    }
+  ],
+  "winner": "TF-IDF 중심점"
+}

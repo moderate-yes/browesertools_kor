@@ -1,0 +1,151 @@
+﻿id,text,label
+1,1센치,length
+2,1센치를 미터로,length
+3,1미터를 인치로,length
+4,70인치를 센티미터로,length
+5,십 센티를 인치로,length
+6,3미터는 몇 피트야,length
+7,5피트를 미터로 바꿔줘,length
+8,10km를 마일로,length
+9,2마일은 몇 킬로미터,length
+10,백 센치를 미터로,length
+11,30cm inch 변환,length
+12,키 180센티를 피트로,length
+13,1인치,length
+14,일 인치 센치로,length
+15,2.5미터를 cm로,length
+16,거리 12킬로미터 마일 환산,length
+17,6피트 2인치를 센치로,length
+18,500밀리미터를 미터로,length
+19,1m는 몇 cm,length
+20,3야드를 미터로,length
+21,1000미터를 킬로미터로,length
+22,0.5마일 km,length
+23,27인치 모니터 센치,length
+24,신장 5피트 7인치 cm,length
+25,길이 250mm를 inch로,length
+26,34평,area
+27,34평을 제곱미터로,area
+28,84제곱미터를 평으로,area
+29,전용면적 59㎡ 몇 평,area
+30,백 평은 몇 제곱미터,area
+31,1평,area
+32,삼십 평을 평방미터로,area
+33,120m2 평수,area
+34,아파트 102제곱미터 평 환산,area
+35,오십 제곱미터는 몇 평,area
+36,대지 200평 ㎡,area
+37,면적 330제곱미터 평으로,area
+38,18평형 실면적,area
+39,1제곱미터를 평으로,area
+40,75평을 m2로,area
+41,사무실 40평 제곱미터,area
+42,250㎡ 평 계산,area
+43,열두 평은 몇 제곱미터야,area
+44,면적이 66m2면 몇 평,area
+45,1000제곱미터 평수,area
+46,150파운드,weight
+47,150파운드를 킬로그램으로,weight
+48,70킬로를 파운드로,weight
+49,1kg은 몇 lb,weight
+50,십 파운드 kg,weight
+51,500그램을 온스로,weight
+52,8온스는 몇 그램,weight
+53,몸무게 80키로 파운드,weight
+54,2.5kg lb 변환,weight
+55,100lb를 kg으로,weight
+56,일 킬로그램,weight
+57,삼십 온스를 그램으로,weight
+58,250g은 몇 oz,weight
+59,5파운드 3온스 kg,weight
+60,무게 12kg 파운드 환산,weight
+61,1톤을 킬로그램으로,weight
+62,천 그램 kg,weight
+63,45킬로는 몇 파운드야,weight
+64,16온스 파운드,weight
+65,0.5파운드를 그램으로,weight
+66,섭씨 30도,temperature
+67,섭씨 30도를 화씨로,temperature
+68,화씨 86도를 섭씨로,temperature
+69,100°F는 몇 도,temperature
+70,영하 10도 화씨,temperature
+71,체온 37도 화씨 환산,temperature
+72,화씨 32,temperature
+73,0도를 화씨로,temperature
+74,섭씨 백 도,temperature
+75,212화씨 섭씨,temperature
+76,오늘 25°C면 화씨 몇 도,temperature
+77,오븐 350F를 섭씨로,temperature
+78,화씨 칠십도,temperature
+79,섭씨 영도,temperature
+80,온도 68°F celsius,temperature
+81,-40도 화씨 변환,temperature
+82,15 c를 f로,temperature
+83,95 fahrenheit 섭씨,temperature
+84,기온 삼십오도 화씨,temperature
+85,냉장고 4도 fahrenheit,temperature
+86,100달러,currency
+87,100달러를 한화로,currency
+88,1달러 원화,currency
+89,50유로를 원으로,currency
+90,만 엔은 몇 원,currency
+91,200파운드를 달러로,currency
+92,30달러를 엔화로,currency
+93,1000원을 달러로,currency
+94,십만 원을 유로로,currency
+95,25유로 usd,currency
+96,$100 환율,currency
+97,USD 75를 KRW로,currency
+98,JPY 5000 원화 환산,currency
+99,EUR 20 달러로,currency
+100,한국 돈 3만원 엔화,currency
+101,백 달러면 얼마야,currency
+102,45불 원으로,currency
+103,1200엔을 한화로,currency
+104,9.99달러,currency
+105,300유로,currency
+106,250위안을 원화로,currency
+107,1000대만달러 한화,currency
+108,50홍콩달러를 원으로,currency
+109,1파운드 환율,currency
+110,달러 27.5 원화 계산,currency
+111,1 billion,english_number
+112,원 빌리언,english_number
+113,3.5 million,english_number
+114,2 trillion,english_number
+115,십 밀리언,english_number
+116,500 thousand,english_number
+117,투 빌리언,english_number
+118,1.2bn,english_number
+119,삼 트릴리언,english_number
+120,7 million을 한국식으로,english_number
+121,one billion 숫자 변환,english_number
+122,4.5밀리언,english_number
+123,백 사우전드,english_number
+124,0.5 trillion,english_number
+125,25m 숫자 단위,english_number
+126,9 billion은 몇 억,english_number
+127,일 빌리언,english_number
+128,12 thousand,english_number
+129,6tn 한국 숫자로,english_number
+130,350 million 달러 규모,english_number
+131,125000000원,korean_amount
+132,일억 오천만원,korean_amount
+133,3500000 금액 표기,korean_amount
+134,금 삼천만원,korean_amount
+135,"12,500,000원정",korean_amount
+136,백만원을 한글로,korean_amount
+137,250000원 문서용 표기,korean_amount
+138,오억 삼천만 원,korean_amount
+139,0원 한글 금액,korean_amount
+140,99999999원정,korean_amount
+141,계약금 3천5백만원 표기,korean_amount
+142,1200000000원을 한글로,korean_amount
+143,십이만 삼천원,korean_amount
+144,금액 780000원,korean_amount
+145,일조 원정,korean_amount
+146,"45,000원 한글",korean_amount
+147,삼억오백만 원 숫자로,korean_amount
+148,100000000 문서 금액,korean_amount
+149,칠천이백원,korean_amount
+150,2005000원 금액 읽기,korean_amount

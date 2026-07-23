@@ -1,0 +1,65 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "convert_number",
+      "description": "Convert English and Korean number units.",
+      "parameters": {
+        "type": "object",
+        "properties": {"query": {"type": "string"}},
+        "required": ["query"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "convert_currency",
+      "description": "Convert currencies when an amount and currency are present.",
+      "parameters": {
+        "type": "object",
+        "properties": {"query": {"type": "string"}},
+        "required": ["query"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "convert_unit",
+      "description": "Convert length, area, weight, or temperature units.",
+      "parameters": {
+        "type": "object",
+        "properties": {"query": {"type": "string"}},
+        "required": ["query"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "request_clarification",
+      "description": "Ask for missing conversion information.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "question": {"type": "string"},
+          "missing": {"type": "string", "enum": ["value", "source_unit", "target_unit", "conversion_type"]}
+        },
+        "required": ["question", "missing"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "unsupported_request",
+      "description": "Handle requests unrelated to supported conversions.",
+      "parameters": {
+        "type": "object",
+        "properties": {"message": {"type": "string"}},
+        "required": ["message"]
+      }
+    }
+  }
+]
