@@ -9,17 +9,18 @@ permissions:
   contents: read
   id-token: write
 
+env:
+  AWS_REGION: ap-northeast-2
+  AWS_ROLE_ARN: arn:aws:iam::929270557834:role/github-actions-browsertools-korea
+  S3_BUCKET: browsertools-korea
+  CLOUDFRONT_DISTRIBUTION_ID: ED7SA6PSHLSTR
+
 concurrency:
   group: production
   cancel-in-progress: true
 
 jobs:
   deploy:
-    if: >-
-      ${{ vars.AWS_ROLE_ARN != '' &&
-          vars.AWS_REGION != '' &&
-          vars.S3_BUCKET != '' &&
-          vars.CLOUDFRONT_DISTRIBUTION_ID != '' }}
     runs-on: ubuntu-latest
     environment: production
 
@@ -30,12 +31,10 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.2
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload static assets
-        env:
-          S3_BUCKET: ${{ vars.S3_BUCKET }}
         run: |
           aws s3 sync static "s3://${S3_BUCKET}/static" \
             --delete \
@@ -43,8 +42,6 @@ jobs:
             --only-show-errors
 
       - name: Upload pages and SEO files
-        env:
-          S3_BUCKET: ${{ vars.S3_BUCKET }}
         run: |
           aws s3 cp index.html "s3://${S3_BUCKET}/index.html" \
             --content-type "text/html; charset=utf-8" \
@@ -64,9 +61,7 @@ jobs:
             --only-show-errors
 
       - name: Refresh CloudFront cache
-        env:
-          DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
         run: >-
           aws cloudfront create-invalidation
-          --distribution-id "${DISTRIBUTION_ID}"
+          --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}"
           --paths "/*"
