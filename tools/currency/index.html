@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="최신 영업일 기준환율로 미국 달러와 원화를 양방향 환산하는 무료 환율 계산기입니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  
+  
+  <link rel="canonical" href="https://korean.browsertools.kr/tools/currency/">
+  <link rel="alternate" hreflang="ko-KR" href="https://korean.browsertools.kr/tools/currency/">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="단숨">
+  <meta property="og:title" content="원화 달러 환율 계산기 | USD·KRW 환산 — 단숨">
+  <meta property="og:description" content="최신 영업일 기준환율로 미국 달러와 원화를 양방향 환산하는 무료 환율 계산기입니다.">
+  <meta property="og:url" content="https://korean.browsertools.kr/tools/currency/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="원화 달러 환율 계산기 | USD·KRW 환산 — 단숨">
+  <meta name="twitter:description" content="최신 영업일 기준환율로 미국 달러와 원화를 양방향 환산하는 무료 환율 계산기입니다.">
+  <meta name="theme-color" content="#f3ebdd">
+  <title>원화 달러 환율 계산기 | USD·KRW 환산 — 단숨</title>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@id": "https://korean.browsertools.kr/#website", "@type": "WebSite", "alternateName": "DANSUM", "inLanguage": "ko-KR", "name": "\ub2e8\uc228", "url": "https://korean.browsertools.kr/"}, {"@id": "https://korean.browsertools.kr/tools/currency/#page", "@type": "WebApplication", "applicationCategory": "UtilitiesApplication", "description": "\ucd5c\uc2e0 \uc601\uc5c5\uc77c \uae30\uc900\ud658\uc728\ub85c \ubbf8\uad6d \ub2ec\ub7ec\uc640 \uc6d0\ud654\ub97c \uc591\ubc29\ud5a5 \ud658\uc0b0\ud558\ub294 \ubb34\ub8cc \ud658\uc728 \uacc4\uc0b0\uae30\uc785\ub2c8\ub2e4.", "inLanguage": "ko-KR", "isPartOf": {"@id": "https://korean.browsertools.kr/#website"}, "name": "\uc6d0\ud654 \ub2ec\ub7ec \ud658\uc728 \uacc4\uc0b0\uae30 | USD\u00b7KRW \ud658\uc0b0 \u2014 \ub2e8\uc228", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "operatingSystem": "Any", "url": "https://korean.browsertools.kr/tools/currency/"}]}</script>
+  <link rel="stylesheet" href="/static/style.css?v=functiongemma-study-6">
+  <script src="/static/tools.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  <script src="/static/ai-converter.js?v=functiongemma-webgpu-6" defer></script>
+</head>
+<body class="tool-page compact-tool theme-orange">
+  
+  <nav class="tool-nav" aria-label="도구 선택">
+    
+    <a href="/" class="">
+      영문 숫자 변환
+    </a>
+    
+    <a href="/tools/currency/" class="active">
+      원화 · 달러 환산
+    </a>
+    
+    <a href="/tools/unit/" class="">
+      생활 단위 변환
+    </a>
+    
+    <a href="/tools/margin/" class="">
+      할인 · 마진 계산
+    </a>
+    
+    <a href="/tools/character-count/" class="">
+      글자 수 세기
+    </a>
+    
+    <a href="/tools/clean-list/" class="">
+      명단 정리
+    </a>
+    
+    <a href="/tools/ai-converter/" class="">
+      AI 자동 변환
+    </a>
+    
+    <a href="/tools/info/" class="">
+      INFO
+    </a>
+    
+  </nav>
+  
+  
+<main class="tool-main">
+  <section class="compact-workspace">
+    <div class="form-panel">
+      <h1 class="visually-hidden">원화 · 달러 환산</h1>
+      
+      <form data-tool="currency">
+        <label for="currency-amount">금액과 통화를 입력하세요</label>
+        <input id="currency-amount" name="amount" inputmode="text" placeholder="100달러 또는 원빌리언 달러" required autofocus autocomplete="off">
+        <p class="example-line"><button type="button" data-example="100달러">100달러</button><button type="button" data-example="원빌리언 달러">원빌리언 달러</button><button type="button" data-example="백만원">백만원</button><button type="button" data-example="100">100</button></p>
+        <p class="field-help">최신 영업일 기준환율 · 실제 환전 금액과 다를 수 있습니다.</p>
+        <button class="submit-button" type="submit">최신 환율로 계산 <span>→</span></button>
+      </form>
+      
+      <div class="result" aria-live="polite" hidden></div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

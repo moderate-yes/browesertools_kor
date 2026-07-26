@@ -1,0 +1,101 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import test from "node:test";
+import vm from "node:vm";
+
+const context = {
+  window: {},
+  console,
+  TextEncoder,
+  AbortSignal,
+  fetch: async () => ({
+    ok: true,
+    async json() {
+      return {rate: 1350.25, date: "2026-07-25"};
+    },
+  }),
+};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync("static/tools.js", "utf8"), context);
+const tools = context.window.DansumTools;
+
+test("영문·한국식 숫자 단위를 양방향 변환한다", async () => {
+  const english = await tools.runTool("english-number", {value: "1 billion"});
+  assert.equal(english.primary, "10억");
+  assert.equal(english.secondary, "1,000,000,000");
+
+  const korean = await tools.runTool("english-number", {value: "10억"});
+  assert.equal(korean.primary, "1 billion");
+});
+
+test("한글 숫자가 포함된 마진을 계산한다", async () => {
+  const result = await tools.runTool("margin", {
+    price: "십만원",
+    cost: "사만오천원",
+    discount: "만원",
+    fee_rate: "10",
+    shipping: "삼천원",
+  });
+  assert.equal(result.revenue, "90,000원");
+  assert.equal(result.fee, "9,000원");
+  assert.equal(result.profit, "33,000원");
+});
+
+test("생활 단위를 자연어로 변환한다", async () => {
+  assert.equal((await tools.runTool("unit", {value: "1인치"})).result, "2.54 cm");
+  assert.equal((await tools.runTool("unit", {value: "34평"})).result, "112.3967 ㎡");
+  assert.equal((await tools.runTool("unit", {value: "섭씨 34도"})).result, "93.2 °F");
+});
+
+test("목록 정리와 글자 수 계산을 브라우저에서 처리한다", async () => {
+  const cleaned = await tools.runTool("clean-list", {text: "김하나\n이둘\n김 하나"});
+  assert.deepEqual({...cleaned}, {cleaned: "김하나\n이둘", before: 3, after: 2, removed: 1});
+
+  const counted = await tools.runTool("character-count", {text: "한글 test\n둘"});
+  assert.equal(counted.lines, 2);
+  assert.equal(counted.words, 3);
+  assert.equal(counted.bytes, new TextEncoder().encode("한글 test\n둘").length);
+});
+
+test("환율 조회를 브라우저 fetch로 처리한다", async () => {
+  const result = await tools.runTool("currency", {amount: "100달러"});
+  assert.equal(result.display, "135,025원");
+  assert.equal(result.source, "USD");
+  assert.equal(result.target, "KRW");
+});
+
+test("모든 정적 페이지와 필수 자산이 존재한다", () => {
+  const pages = [
+    "index.html",
+    "tools/currency/index.html",
+    "tools/unit/index.html",
+    "tools/margin/index.html",
+    "tools/character-count/index.html",
+    "tools/clean-list/index.html",
+    "tools/ai-converter/index.html",
+    "tools/info/index.html",
+  ];
+  for (const page of pages) {
+    const html = fs.readFileSync(page, "utf8");
+    assert.match(html, /<html lang="ko">/);
+    assert.match(html, /\/static\/tools\.js/);
+    assert.match(html, /https:\/\/korean\.browsertools\.kr/);
+    assert.doesNotMatch(html, /\/api\//);
+    assert.doesNotMatch(html, /https:\/\/example\.com/);
+  }
+  for (const asset of ["style.css", "tools.js", "app.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg"]) {
+    assert.equal(fs.existsSync(path.join("static", asset)), true);
+  }
+  assert.equal(fs.existsSync("aws/cloudfront-url-rewrite.js"), true);
+  assert.equal(fs.existsSync(".github/workflows/deploy-s3.yml"), true);
+});
+
+test("CloudFront가 폴더형 주소를 정적 HTML로 연결한다", () => {
+  const cloudfront = {};
+  vm.createContext(cloudfront);
+  vm.runInContext(fs.readFileSync("aws/cloudfront-url-rewrite.js", "utf8"), cloudfront);
+  assert.equal(cloudfront.handler({request: {uri: "/"}}).uri, "/index.html");
+  assert.equal(cloudfront.handler({request: {uri: "/tools/currency/"}}).uri, "/tools/currency/index.html");
+  assert.equal(cloudfront.handler({request: {uri: "/static/app.js"}}).uri, "/static/app.js");
+});

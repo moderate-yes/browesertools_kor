@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="판매가, 원가, 할인, 수수료와 배송비를 반영해 실제 순이익과 마진율을 계산합니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  
+  
+  <link rel="canonical" href="https://korean.browsertools.kr/tools/margin/">
+  <link rel="alternate" hreflang="ko-KR" href="https://korean.browsertools.kr/tools/margin/">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="단숨">
+  <meta property="og:title" content="할인 마진 계산기 | 수수료·순이익 계산 — 단숨">
+  <meta property="og:description" content="판매가, 원가, 할인, 수수료와 배송비를 반영해 실제 순이익과 마진율을 계산합니다.">
+  <meta property="og:url" content="https://korean.browsertools.kr/tools/margin/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="할인 마진 계산기 | 수수료·순이익 계산 — 단숨">
+  <meta name="twitter:description" content="판매가, 원가, 할인, 수수료와 배송비를 반영해 실제 순이익과 마진율을 계산합니다.">
+  <meta name="theme-color" content="#f3ebdd">
+  <title>할인 마진 계산기 | 수수료·순이익 계산 — 단숨</title>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@id": "https://korean.browsertools.kr/#website", "@type": "WebSite", "alternateName": "DANSUM", "inLanguage": "ko-KR", "name": "\ub2e8\uc228", "url": "https://korean.browsertools.kr/"}, {"@id": "https://korean.browsertools.kr/tools/margin/#page", "@type": "WebApplication", "applicationCategory": "UtilitiesApplication", "description": "\ud310\ub9e4\uac00, \uc6d0\uac00, \ud560\uc778, \uc218\uc218\ub8cc\uc640 \ubc30\uc1a1\ube44\ub97c \ubc18\uc601\ud574 \uc2e4\uc81c \uc21c\uc774\uc775\uacfc \ub9c8\uc9c4\uc728\uc744 \uacc4\uc0b0\ud569\ub2c8\ub2e4.", "inLanguage": "ko-KR", "isPartOf": {"@id": "https://korean.browsertools.kr/#website"}, "name": "\ud560\uc778 \ub9c8\uc9c4 \uacc4\uc0b0\uae30 | \uc218\uc218\ub8cc\u00b7\uc21c\uc774\uc775 \uacc4\uc0b0 \u2014 \ub2e8\uc228", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "operatingSystem": "Any", "url": "https://korean.browsertools.kr/tools/margin/"}]}</script>
+  <link rel="stylesheet" href="/static/style.css?v=functiongemma-study-6">
+  <script src="/static/tools.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  <script src="/static/ai-converter.js?v=functiongemma-webgpu-6" defer></script>
+</head>
+<body class="tool-page compact-tool theme-red">
+  
+  <nav class="tool-nav" aria-label="도구 선택">
+    
+    <a href="/" class="">
+      영문 숫자 변환
+    </a>
+    
+    <a href="/tools/currency/" class="">
+      원화 · 달러 환산
+    </a>
+    
+    <a href="/tools/unit/" class="">
+      생활 단위 변환
+    </a>
+    
+    <a href="/tools/margin/" class="active">
+      할인 · 마진 계산
+    </a>
+    
+    <a href="/tools/character-count/" class="">
+      글자 수 세기
+    </a>
+    
+    <a href="/tools/clean-list/" class="">
+      명단 정리
+    </a>
+    
+    <a href="/tools/ai-converter/" class="">
+      AI 자동 변환
+    </a>
+    
+    <a href="/tools/info/" class="">
+      INFO
+    </a>
+    
+  </nav>
+  
+  
+<main class="tool-main">
+  <section class="compact-workspace">
+    <div class="form-panel">
+      <h1 class="visually-hidden">할인 · 마진 계산</h1>
+      
+      <form data-tool="margin">
+        <div class="field-grid">
+          <label>판매가<input name="price" inputmode="text" placeholder="십만원" required autofocus></label>
+          <label>원가<input name="cost" inputmode="text" placeholder="사만오천원" required></label>
+          <label>할인액<input name="discount" inputmode="text" value="0"></label>
+          <label>수수료율 (%)<input name="fee_rate" inputmode="decimal" value="0"></label>
+          <label>배송비<input name="shipping" inputmode="text" value="0"></label>
+        </div>
+        <button class="submit-button" type="submit">실제 수익 계산 <span>→</span></button>
+      </form>
+      
+      <div class="result" aria-live="polite" hidden></div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

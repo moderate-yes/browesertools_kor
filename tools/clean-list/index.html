@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="줄바꿈·쉼표로 입력한 명단을 정리하고 공백과 대소문자 차이를 고려해 중복 항목을 제거합니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  
+  
+  <link rel="canonical" href="https://korean.browsertools.kr/tools/clean-list/">
+  <link rel="alternate" hreflang="ko-KR" href="https://korean.browsertools.kr/tools/clean-list/">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="단숨">
+  <meta property="og:title" content="명단 정리 | 중복 제거·목록 정돈 — 단숨">
+  <meta property="og:description" content="줄바꿈·쉼표로 입력한 명단을 정리하고 공백과 대소문자 차이를 고려해 중복 항목을 제거합니다.">
+  <meta property="og:url" content="https://korean.browsertools.kr/tools/clean-list/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="명단 정리 | 중복 제거·목록 정돈 — 단숨">
+  <meta name="twitter:description" content="줄바꿈·쉼표로 입력한 명단을 정리하고 공백과 대소문자 차이를 고려해 중복 항목을 제거합니다.">
+  <meta name="theme-color" content="#f3ebdd">
+  <title>명단 정리 | 중복 제거·목록 정돈 — 단숨</title>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@id": "https://korean.browsertools.kr/#website", "@type": "WebSite", "alternateName": "DANSUM", "inLanguage": "ko-KR", "name": "\ub2e8\uc228", "url": "https://korean.browsertools.kr/"}, {"@id": "https://korean.browsertools.kr/tools/clean-list/#page", "@type": "WebApplication", "applicationCategory": "UtilitiesApplication", "description": "\uc904\ubc14\uafc8\u00b7\uc27c\ud45c\ub85c \uc785\ub825\ud55c \uba85\ub2e8\uc744 \uc815\ub9ac\ud558\uace0 \uacf5\ubc31\uacfc \ub300\uc18c\ubb38\uc790 \ucc28\uc774\ub97c \uace0\ub824\ud574 \uc911\ubcf5 \ud56d\ubaa9\uc744 \uc81c\uac70\ud569\ub2c8\ub2e4.", "inLanguage": "ko-KR", "isPartOf": {"@id": "https://korean.browsertools.kr/#website"}, "name": "\uba85\ub2e8 \uc815\ub9ac | \uc911\ubcf5 \uc81c\uac70\u00b7\ubaa9\ub85d \uc815\ub3c8 \u2014 \ub2e8\uc228", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "operatingSystem": "Any", "url": "https://korean.browsertools.kr/tools/clean-list/"}]}</script>
+  <link rel="stylesheet" href="/static/style.css?v=functiongemma-study-6">
+  <script src="/static/tools.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  <script src="/static/ai-converter.js?v=functiongemma-webgpu-6" defer></script>
+</head>
+<body class="tool-page compact-tool theme-green">
+  
+  <nav class="tool-nav" aria-label="도구 선택">
+    
+    <a href="/" class="">
+      영문 숫자 변환
+    </a>
+    
+    <a href="/tools/currency/" class="">
+      원화 · 달러 환산
+    </a>
+    
+    <a href="/tools/unit/" class="">
+      생활 단위 변환
+    </a>
+    
+    <a href="/tools/margin/" class="">
+      할인 · 마진 계산
+    </a>
+    
+    <a href="/tools/character-count/" class="">
+      글자 수 세기
+    </a>
+    
+    <a href="/tools/clean-list/" class="active">
+      명단 정리
+    </a>
+    
+    <a href="/tools/ai-converter/" class="">
+      AI 자동 변환
+    </a>
+    
+    <a href="/tools/info/" class="">
+      INFO
+    </a>
+    
+  </nav>
+  
+  
+<main class="tool-main">
+  <section class="compact-workspace">
+    <div class="form-panel">
+      <h1 class="visually-hidden">명단 정리</h1>
+      
+      <form data-tool="clean-list">
+        <label for="list-text">명단을 붙여 넣으세요</label>
+        <textarea id="list-text" name="text" rows="8" maxlength="50000" placeholder="김하나&#10;이둘&#10;김 하나" required autofocus></textarea>
+        <button class="submit-button" type="submit">중복 제거하고 정리 <span>→</span></button>
+      </form>
+      
+      <div class="result" aria-live="polite" hidden></div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

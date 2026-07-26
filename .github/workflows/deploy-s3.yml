@@ -1,0 +1,72 @@
+name: Deploy static site to AWS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: >-
+      ${{ vars.AWS_ROLE_ARN != '' &&
+          vars.AWS_REGION != '' &&
+          vars.S3_BUCKET != '' &&
+          vars.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.2
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload static assets
+        env:
+          S3_BUCKET: ${{ vars.S3_BUCKET }}
+        run: |
+          aws s3 sync static "s3://${S3_BUCKET}/static" \
+            --delete \
+            --cache-control "public,max-age=3600" \
+            --only-show-errors
+
+      - name: Upload pages and SEO files
+        env:
+          S3_BUCKET: ${{ vars.S3_BUCKET }}
+        run: |
+          aws s3 cp index.html "s3://${S3_BUCKET}/index.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache" \
+            --only-show-errors
+          aws s3 sync tools "s3://${S3_BUCKET}/tools" \
+            --delete \
+            --cache-control "no-cache" \
+            --only-show-errors
+          aws s3 cp robots.txt "s3://${S3_BUCKET}/robots.txt" \
+            --content-type "text/plain; charset=utf-8" \
+            --cache-control "no-cache" \
+            --only-show-errors
+          aws s3 cp sitemap.xml "s3://${S3_BUCKET}/sitemap.xml" \
+            --content-type "application/xml; charset=utf-8" \
+            --cache-control "no-cache" \
+            --only-show-errors
+
+      - name: Refresh CloudFront cache
+        env:
+          DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: >-
+          aws cloudfront create-invalidation
+          --distribution-id "${DISTRIBUTION_ID}"
+          --paths "/*"

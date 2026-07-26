@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="공백 포함·제외 글자 수, 단어 수, 줄 수와 UTF-8 바이트를 브라우저에서 빠르게 계산합니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+  
+  
+  <link rel="canonical" href="https://korean.browsertools.kr/tools/character-count/">
+  <link rel="alternate" hreflang="ko-KR" href="https://korean.browsertools.kr/tools/character-count/">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:site_name" content="단숨">
+  <meta property="og:title" content="글자 수 세기 | 공백·단어·바이트 계산 — 단숨">
+  <meta property="og:description" content="공백 포함·제외 글자 수, 단어 수, 줄 수와 UTF-8 바이트를 브라우저에서 빠르게 계산합니다.">
+  <meta property="og:url" content="https://korean.browsertools.kr/tools/character-count/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="글자 수 세기 | 공백·단어·바이트 계산 — 단숨">
+  <meta name="twitter:description" content="공백 포함·제외 글자 수, 단어 수, 줄 수와 UTF-8 바이트를 브라우저에서 빠르게 계산합니다.">
+  <meta name="theme-color" content="#f3ebdd">
+  <title>글자 수 세기 | 공백·단어·바이트 계산 — 단숨</title>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@id": "https://korean.browsertools.kr/#website", "@type": "WebSite", "alternateName": "DANSUM", "inLanguage": "ko-KR", "name": "\ub2e8\uc228", "url": "https://korean.browsertools.kr/"}, {"@id": "https://korean.browsertools.kr/tools/character-count/#page", "@type": "WebApplication", "applicationCategory": "UtilitiesApplication", "description": "\uacf5\ubc31 \ud3ec\ud568\u00b7\uc81c\uc678 \uae00\uc790 \uc218, \ub2e8\uc5b4 \uc218, \uc904 \uc218\uc640 UTF-8 \ubc14\uc774\ud2b8\ub97c \ube0c\ub77c\uc6b0\uc800\uc5d0\uc11c \ube60\ub974\uac8c \uacc4\uc0b0\ud569\ub2c8\ub2e4.", "inLanguage": "ko-KR", "isPartOf": {"@id": "https://korean.browsertools.kr/#website"}, "name": "\uae00\uc790 \uc218 \uc138\uae30 | \uacf5\ubc31\u00b7\ub2e8\uc5b4\u00b7\ubc14\uc774\ud2b8 \uacc4\uc0b0 \u2014 \ub2e8\uc228", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KRW"}, "operatingSystem": "Any", "url": "https://korean.browsertools.kr/tools/character-count/"}]}</script>
+  <link rel="stylesheet" href="/static/style.css?v=functiongemma-study-6">
+  <script src="/static/tools.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  <script src="/static/ai-converter.js?v=functiongemma-webgpu-6" defer></script>
+</head>
+<body class="tool-page compact-tool theme-purple">
+  
+  <nav class="tool-nav" aria-label="도구 선택">
+    
+    <a href="/" class="">
+      영문 숫자 변환
+    </a>
+    
+    <a href="/tools/currency/" class="">
+      원화 · 달러 환산
+    </a>
+    
+    <a href="/tools/unit/" class="">
+      생활 단위 변환
+    </a>
+    
+    <a href="/tools/margin/" class="">
+      할인 · 마진 계산
+    </a>
+    
+    <a href="/tools/character-count/" class="active">
+      글자 수 세기
+    </a>
+    
+    <a href="/tools/clean-list/" class="">
+      명단 정리
+    </a>
+    
+    <a href="/tools/ai-converter/" class="">
+      AI 자동 변환
+    </a>
+    
+    <a href="/tools/info/" class="">
+      INFO
+    </a>
+    
+  </nav>
+  
+  
+<main class="tool-main">
+  <section class="compact-workspace">
+    <div class="form-panel">
+      <h1 class="visually-hidden">글자 수 세기</h1>
+      
+      <form data-tool="character-count" data-live-count>
+        <label for="count-text">글자 수를 셀 내용을 입력하세요</label>
+        <textarea id="count-text" name="text" rows="10" maxlength="100000" placeholder="여기에 내용을 입력하거나 붙여 넣으세요." autofocus></textarea>
+        <button class="submit-button" type="submit">글자 수 세기 <span>→</span></button>
+      </form>
+      
+      <div class="result" aria-live="polite" hidden></div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
