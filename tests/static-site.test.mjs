@@ -76,17 +76,38 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     "tools/ai-converter/index.html",
     "tools/info/index.html",
   ];
+  const titles = new Set();
+  const descriptions = new Set();
   for (const page of pages) {
     const html = fs.readFileSync(page, "utf8");
+    const title = html.match(/<title>([^<]+)<\/title>/)?.[1];
+    const description = html.match(/<meta name="description" content="([^"]+)">/)?.[1];
+    const structuredData = html.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)?.[1];
     assert.match(html, /<html lang="ko">/);
     assert.match(html, /\/static\/tools\.js/);
     assert.match(html, /https:\/\/korean\.browsertools\.kr/);
+    assert.match(html, /<link rel="canonical" href="https:\/\/korean\.browsertools\.kr/);
+    assert.match(html, /<link rel="shortcut icon" href="https:\/\/korean\.browsertools\.kr\/static\/favicon\.svg"/);
+    assert.match(html, /<meta property="og:image" content="https:\/\/korean\.browsertools\.kr\/static\/og-dansum\.svg">/);
+    assert.match(html, /"@type":"FAQPage"/);
+    assert.match(html, /class="seo-guide"/);
+    assert.equal((html.match(/<h1\b/g) || []).length, 1);
+    assert.ok(title && [...title].length <= 40);
+    assert.ok(description && [...description].length <= 80);
+    assert.equal(titles.has(title), false);
+    assert.equal(descriptions.has(description), false);
+    titles.add(title);
+    descriptions.add(description);
+    assert.doesNotThrow(() => JSON.parse(structuredData));
     assert.doesNotMatch(html, /\/api\//);
     assert.doesNotMatch(html, /https:\/\/example\.com/);
   }
-  for (const asset of ["style.css", "tools.js", "app.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg"]) {
+  for (const asset of ["style.css", "tools.js", "app.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg", "og-dansum.svg"]) {
     assert.equal(fs.existsSync(path.join("static", asset)), true);
   }
+  assert.match(fs.readFileSync("robots.txt", "utf8"), /User-agent: Yeti[\s\S]*Allow: \//);
+  assert.match(fs.readFileSync("sitemap.xml", "utf8"), /<lastmod>2026-07-26<\/lastmod>/);
+  assert.equal(fs.existsSync("a75c6419caef4302bc7c045bc45b49ed.txt"), true);
   assert.equal(fs.existsSync("aws/cloudfront-url-rewrite.js"), true);
   assert.equal(fs.existsSync(".github/workflows/deploy-s3.yml"), true);
 });

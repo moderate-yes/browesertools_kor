@@ -620,3 +620,65 @@ html {
     font-size:10px;
   }
 }
+
+/* Search-friendly guides: useful page content remains visible without interrupting the tool. */
+.seo-guide {
+  padding:58px 32px 150px;
+  border-top:1px solid var(--black);
+  background:var(--ivory);
+}
+.compact-tool .compact-workspace { min-height:430px; }
+.tool-page-title {
+  margin:0 0 28px;
+  font-size:clamp(27px,6vw,38px);
+  line-height:1.15;
+  letter-spacing:-.055em;
+}
+.seo-guide .seo-kicker {
+  margin:0 0 18px;
+  font:900 9px/1 "DM Sans",sans-serif;
+  letter-spacing:2px;
+}
+.seo-guide h2 {
+  margin:0;
+  font-size:clamp(29px,6vw,42px);
+  line-height:1.18;
+  letter-spacing:-.055em;
+}
+.seo-guide .seo-intro {
+  margin:22px 0 0;
+  color:#514c45;
+  font-size:13px;
+  line-height:1.85;
+}
+.seo-facts {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  margin:34px 0 48px;
+  border-top:1px solid var(--black);
+  border-left:1px solid var(--black);
+}
+.seo-facts>div {
+  min-width:0;
+  padding:18px 12px;
+  border-right:1px solid var(--black);
+  border-bottom:1px solid var(--black);
+  background:var(--white);
+}
+.seo-facts dt { color:#756e64; font-size:9px; font-weight:700; }
+.seo-facts dd { margin:7px 0 0; font-size:13px; font-weight:900; overflow-wrap:anywhere; }
+.seo-guide h3 { margin:42px 0 16px; font-size:20px; letter-spacing:-.04em; }
+.seo-guide ol { margin:0; padding-left:23px; }
+.seo-guide ol li { padding:5px 0 5px 4px; color:#514c45; font-size:12px; line-height:1.7; }
+.seo-faq { border-top:1px solid var(--black); }
+.seo-faq details { border-bottom:1px solid #c6beb2; }
+.seo-faq summary { padding:17px 2px; font-size:12px; font-weight:900; cursor:pointer; }
+.seo-faq details p { margin:-3px 0 18px; color:#5e5850; font-size:12px; line-height:1.75; }
+
+@media (max-width:520px) {
+  .compact-tool .compact-workspace { min-height:0; }
+  .seo-guide { padding:45px 20px 80px; }
+  .seo-facts { grid-template-columns:1fr; }
+  .seo-facts>div { display:grid; grid-template-columns:90px 1fr; align-items:center; }
+  .seo-facts dd { margin:0; }
+}

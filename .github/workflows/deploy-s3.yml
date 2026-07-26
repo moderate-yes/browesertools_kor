@@ -14,6 +14,7 @@ env:
   AWS_ROLE_ARN: arn:aws:iam::929270557834:role/github-actions-browsertools-korea
   S3_BUCKET: browsertools-korea
   CLOUDFRONT_DISTRIBUTION_ID: ED7SA6PSHLSTR
+  INDEXNOW_KEY: a75c6419caef4302bc7c045bc45b49ed
 
 concurrency:
   group: production
@@ -59,9 +60,28 @@ jobs:
             --content-type "application/xml; charset=utf-8" \
             --cache-control "no-cache" \
             --only-show-errors
+          aws s3 cp "${INDEXNOW_KEY}.txt" "s3://${S3_BUCKET}/${INDEXNOW_KEY}.txt" \
+            --content-type "text/plain; charset=utf-8" \
+            --cache-control "no-cache" \
+            --only-show-errors
 
       - name: Refresh CloudFront cache
         run: >-
           aws cloudfront create-invalidation
           --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}"
           --paths "/*"
+
+      - name: Notify Naver and IndexNow search engines
+        run: |
+          URLS_JSON="$(sed -n 's:.*<loc>\(.*\)</loc>.*:\1:p' sitemap.xml | jq -R . | jq -s .)"
+          jq -n \
+            --arg host "korean.browsertools.kr" \
+            --arg key "${INDEXNOW_KEY}" \
+            --arg keyLocation "https://korean.browsertools.kr/${INDEXNOW_KEY}.txt" \
+            --argjson urlList "${URLS_JSON}" \
+            '{host:$host,key:$key,keyLocation:$keyLocation,urlList:$urlList}' \
+            > /tmp/indexnow.json
+          curl --fail-with-body --retry 3 \
+            --header "Content-Type: application/json; charset=utf-8" \
+            --data-binary @/tmp/indexnow.json \
+            https://searchadvisor.naver.com/indexnow
