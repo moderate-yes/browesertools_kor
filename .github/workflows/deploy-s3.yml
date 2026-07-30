@@ -48,6 +48,10 @@ jobs:
             --content-type "text/html; charset=utf-8" \
             --cache-control "no-cache" \
             --only-show-errors
+          aws s3 cp googleab522432670c34d4.html "s3://${S3_BUCKET}/googleab522432670c34d4.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache" \
+            --only-show-errors
           aws s3 sync tools "s3://${S3_BUCKET}/tools" \
             --delete \
             --cache-control "no-cache" \
