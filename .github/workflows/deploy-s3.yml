@@ -39,18 +39,24 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Deploy visitor counter infrastructure
+      - name: Package visitor counter infrastructure
         run: |
           aws cloudformation package \
             --template-file aws/visitor-counter/template.yml \
             --s3-bucket "${S3_BUCKET}" \
             --s3-prefix infrastructure/visitor-counter \
             --output-template-file /tmp/visitor-counter-packaged.yml
+
+      - name: Deploy visitor counter infrastructure
+        run: |
           aws cloudformation deploy \
             --template-file /tmp/visitor-counter-packaged.yml \
             --stack-name "${VISITOR_COUNTER_STACK}" \
             --capabilities CAPABILITY_IAM \
             --no-fail-on-empty-changeset
+
+      - name: Configure visitor counter endpoint
+        run: |
           COUNTER_URL="$(aws cloudformation describe-stacks \
             --stack-name "${VISITOR_COUNTER_STACK}" \
             --query 'Stacks[0].Outputs[?OutputKey==`VisitorCounterUrl`].OutputValue' \
