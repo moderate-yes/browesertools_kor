@@ -15,7 +15,6 @@ env:
   S3_BUCKET: browsertools-korea
   CLOUDFRONT_DISTRIBUTION_ID: ED7SA6PSHLSTR
   INDEXNOW_KEY: a75c6419caef4302bc7c045bc45b49ed
-  VISITOR_COUNTER_STACK: browsertools-korea-visitor-counter
 
 concurrency:
   group: production
@@ -30,39 +29,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v5
 
-      - name: Test static site
-        run: node --test tests/*.test.mjs
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.1.2
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Package visitor counter infrastructure
-        run: |
-          aws cloudformation package \
-            --template-file aws/visitor-counter/template.yml \
-            --s3-bucket "${S3_BUCKET}" \
-            --s3-prefix infrastructure/visitor-counter \
-            --output-template-file /tmp/visitor-counter-packaged.yml
-
-      - name: Deploy visitor counter infrastructure
-        run: |
-          aws cloudformation deploy \
-            --template-file /tmp/visitor-counter-packaged.yml \
-            --stack-name "${VISITOR_COUNTER_STACK}" \
-            --capabilities CAPABILITY_IAM \
-            --no-fail-on-empty-changeset
-
-      - name: Configure visitor counter endpoint
-        run: |
-          COUNTER_URL="$(aws cloudformation describe-stacks \
-            --stack-name "${VISITOR_COUNTER_STACK}" \
-            --query 'Stacks[0].Outputs[?OutputKey==`VisitorCounterUrl`].OutputValue' \
-            --output text)"
-          printf 'window.DANSUM_CONFIG = Object.freeze({\n  visitorCounterUrl: "%s",\n});\n' "${COUNTER_URL}" \
-            > static/runtime-config.js
 
       - name: Upload static assets
         run: |
