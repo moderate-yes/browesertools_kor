@@ -56,7 +56,7 @@ Resources:
         Variables:
           TABLE_NAME: !Ref VisitorCounterTable
           ALLOWED_ORIGIN: https://korean.browsertools.kr
-      Code: aws/visitor-counter
+      Code: .
 
   VisitorCounterUrl:
     Type: AWS::Lambda::Url
