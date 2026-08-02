@@ -90,7 +90,7 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     assert.match(html, /https:\/\/korean\.browsertools\.kr/);
     assert.match(html, /<link rel="canonical" href="https:\/\/korean\.browsertools\.kr/);
     assert.match(html, /<link rel="shortcut icon" href="https:\/\/korean\.browsertools\.kr\/static\/favicon\.svg"/);
-    assert.match(html, /<meta property="og:image" content="https:\/\/korean\.browsertools\.kr\/static\/og-dansum\.svg">/);
+    assert.match(html, /<meta property="og:image" content="https:\/\/korean\.browsertools\.kr\/static\/og-woonhae\.svg">/);
     assert.match(html, /"@type":"FAQPage"/);
     assert.match(html, /class="seo-guide"/);
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
@@ -104,7 +104,7 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     assert.doesNotMatch(html, /\/api\//);
     assert.doesNotMatch(html, /https:\/\/example\.com/);
   }
-  for (const asset of ["style.css", "tools.js", "app.js", "visitor-counter-config.js", "visitor-counter.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg", "og-dansum.svg"]) {
+  for (const asset of ["style.css", "tools.js", "app.js", "visitor-counter-config.js", "visitor-counter.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg", "og-woonhae.svg"]) {
     assert.equal(fs.existsSync(path.join("static", asset)), true);
   }
   assert.match(fs.readFileSync("robots.txt", "utf8"), /User-agent: Yeti[\s\S]*Allow: \//);

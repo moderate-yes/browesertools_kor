@@ -27,7 +27,7 @@
     footer.className = "visitor-counter";
     footer.setAttribute("aria-label", "방문자 수");
     footer.innerHTML = [
-      '<span class="visitor-counter__brand">DANSUM</span>',
+      '<span class="visitor-counter__brand">WOONHAE</span>',
       '<span>오늘 <strong data-visitor-today>—</strong></span>',
       '<span>전체 <strong data-visitor-total>—</strong></span>',
     ].join("");

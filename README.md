@@ -1,4 +1,4 @@
-# 단숨 — 정적 웹 도구
+# WOONHAE — 정적 웹 도구
 
 한국어 숫자, 환율, 생활 단위, 마진, 글자 수와 명단을 처리하는 정적 웹사이트입니다.
 도구 기능은 HTML, CSS, JavaScript만으로 실행되며 S3와 CloudFront에 바로 배포할 수 있습니다. 하단 방문자 수는 Google Apps Script를 통해 비공개 Google Sheet에 저장합니다.
