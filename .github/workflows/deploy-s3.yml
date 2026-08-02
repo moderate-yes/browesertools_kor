@@ -76,6 +76,7 @@ jobs:
           --paths "/*"
 
       - name: Notify Naver and IndexNow search engines
+        continue-on-error: true
         run: |
           URLS_JSON="$(sed -n 's:.*<loc>\(.*\)</loc>.*:\1:p' sitemap.xml | jq -R . | jq -s .)"
           jq -n \
@@ -85,7 +86,7 @@ jobs:
             --argjson urlList "${URLS_JSON}" \
             '{host:$host,key:$key,keyLocation:$keyLocation,urlList:$urlList}' \
             > /tmp/indexnow.json
-          curl --fail-with-body --retry 3 \
+          curl --fail-with-body --retry 2 --connect-timeout 10 --max-time 30 \
             --header "Content-Type: application/json; charset=utf-8" \
             --data-binary @/tmp/indexnow.json \
             https://searchadvisor.naver.com/indexnow
