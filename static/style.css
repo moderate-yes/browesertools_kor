@@ -682,3 +682,33 @@ html {
   .seo-facts>div { display:grid; grid-template-columns:90px 1fr; align-items:center; }
   .seo-facts dd { margin:0; }
 }
+
+/* Lightweight visitor count powered by a private Google Sheet. */
+.visitor-counter {
+  min-height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:20px;
+  padding:14px 32px;
+  border-top:1px solid var(--black);
+  color:var(--white);
+  background:var(--black);
+  font:500 11px/1.4 "Noto Sans KR",sans-serif;
+}
+.visitor-counter[hidden] { display:none; }
+.visitor-counter__brand {
+  margin-right:auto;
+  font:900 12px/1 "DM Sans",sans-serif;
+  letter-spacing:1.5px;
+}
+.visitor-counter strong {
+  margin-left:4px;
+  font:700 12px/1 "DM Sans",sans-serif;
+}
+
+@media (max-width:520px) {
+  .visitor-counter { min-height:50px; gap:14px; padding:12px 20px; font-size:10px; }
+  .visitor-counter__brand { font-size:11px; }
+  .visitor-counter strong { font-size:11px; }
+}

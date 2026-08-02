@@ -1,7 +1,7 @@
 # 단숨 — 정적 웹 도구
 
 한국어 숫자, 환율, 생활 단위, 마진, 글자 수와 명단을 처리하는 정적 웹사이트입니다.
-서버나 데이터베이스 없이 HTML, CSS, JavaScript만으로 실행되며 S3와 CloudFront에 바로 배포할 수 있습니다.
+도구 기능은 HTML, CSS, JavaScript만으로 실행되며 S3와 CloudFront에 바로 배포할 수 있습니다. 하단 방문자 수는 Google Apps Script를 통해 비공개 Google Sheet에 저장합니다.
 
 ## 구조
 
@@ -19,12 +19,16 @@ static/
   style.css                      # 공통 디자인
   tools.js                       # 브라우저 계산 엔진
   app.js                         # 폼과 결과 UI
+  visitor-counter.js             # 오늘·전체 방문자 수 표시
+  visitor-counter-config.js      # Apps Script 웹 앱 주소
   ai-converter.js                # AI 화면 제어
   functiongemma-worker.js        # WebGPU 모델 워커
 tests/
   static-site.test.mjs           # 정적 기능 테스트
 aws/
   cloudfront-url-rewrite.js      # 폴더형 주소를 index.html로 연결
+google-apps-script/
+  visitor-counter.gs             # Google Sheet 방문자 집계 웹 앱
 ```
 
 ## 로컬 확인
@@ -51,8 +55,18 @@ node scripts/set-site-url.mjs https://새로운-도메인
 Node.js 18 이상에서 실행합니다.
 
 ```bash
-node --test tests/static-site.test.mjs
+node --test tests/*.test.mjs
 ```
+
+## 방문자 수 설정
+
+1. Google Sheet를 만들고 **확장 프로그램 → Apps Script**를 엽니다.
+2. `google-apps-script/visitor-counter.gs` 내용을 붙여넣습니다.
+3. 프로젝트 시간대를 `Asia/Seoul`로 설정합니다.
+4. **배포 → 새 배포 → 웹 앱**에서 실행 사용자는 본인, 접근 권한은 모든 사용자로 배포합니다.
+5. 발급된 `/exec` 주소를 `static/visitor-counter-config.js`의 `endpoint`에 입력합니다.
+
+시트는 공개하지 않습니다. 같은 브라우저에서는 한국 시간 기준 하루 한 번만 집계하며, Apps Script 잠금을 사용해 동시 요청의 숫자 누락을 방지합니다.
 
 ## S3·CloudFront 배포
 
