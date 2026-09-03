@@ -3,7 +3,7 @@
  */
 
 const COUNTER_SHEET_NAME = "방문자수";
-const ALLOWED_SITE = "korean.browsertools.kr";
+const ALLOWED_SITE = "browsertools.kr";
 const SEOUL_TIME_ZONE = "Asia/Seoul";
 
 function doGet(event) {

@@ -64,6 +64,10 @@ jobs:
             --content-type "application/xml; charset=utf-8" \
             --cache-control "no-cache" \
             --only-show-errors
+          aws s3 cp ads.txt "s3://${S3_BUCKET}/ads.txt" \
+            --content-type "text/plain; charset=utf-8" \
+            --cache-control "no-cache" \
+            --only-show-errors
           aws s3 cp "${INDEXNOW_KEY}.txt" "s3://${S3_BUCKET}/${INDEXNOW_KEY}.txt" \
             --content-type "text/plain; charset=utf-8" \
             --cache-control "no-cache" \
@@ -80,9 +84,9 @@ jobs:
         run: |
           URLS_JSON="$(sed -n 's:.*<loc>\(.*\)</loc>.*:\1:p' sitemap.xml | jq -R . | jq -s .)"
           jq -n \
-            --arg host "korean.browsertools.kr" \
+            --arg host "browsertools.kr" \
             --arg key "${INDEXNOW_KEY}" \
-            --arg keyLocation "https://korean.browsertools.kr/${INDEXNOW_KEY}.txt" \
+            --arg keyLocation "https://browsertools.kr/${INDEXNOW_KEY}.txt" \
             --argjson urlList "${URLS_JSON}" \
             '{host:$host,key:$key,keyLocation:$keyLocation,urlList:$urlList}' \
             > /tmp/indexnow.json

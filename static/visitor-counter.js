@@ -87,7 +87,7 @@
 
     const today = todayInKorea();
     const action = readCountedDate() === today ? "read" : "hit";
-    requestCounts(config.endpoint, config.site || "korean.browsertools.kr", action, function (counts) {
+    requestCounts(config.endpoint, config.site || "browsertools.kr", action, function (counts) {
       if (!counts) {
         footer.hidden = true;
         return;

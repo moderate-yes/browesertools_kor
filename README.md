@@ -43,7 +43,7 @@ python -m http.server 8000
 
 ## 운영 주소 설정
 
-현재 운영 주소는 `https://korean.browsertools.kr`로 설정되어 있습니다.
+현재 운영 주소는 `https://browsertools.kr`로 설정되어 있습니다.
 주소를 바꿀 때는 다음 명령을 사용합니다.
 
 ```bash

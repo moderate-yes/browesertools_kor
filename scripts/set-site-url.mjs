@@ -19,9 +19,14 @@ try {
 
 const root = process.cwd();
 const files = [
+  "README.md",
   "index.html",
   "robots.txt",
   "sitemap.xml",
+  path.join(".github", "workflows", "deploy-s3.yml"),
+  path.join("google-apps-script", "visitor-counter.gs"),
+  path.join("static", "visitor-counter-config.js"),
+  path.join("static", "visitor-counter.js"),
   ...fs.readdirSync(path.join(root, "tools"), {withFileTypes: true})
     .filter(entry => entry.isDirectory())
     .map(entry => path.join("tools", entry.name, "index.html")),
@@ -30,7 +35,9 @@ const files = [
 for (const relative of files) {
   const file = path.join(root, relative);
   const content = fs.readFileSync(file, "utf8")
-    .replaceAll("https://example.com", siteUrl);
+    .replaceAll("https://example.com", siteUrl)
+    .replaceAll("https://korean.browsertools.kr", siteUrl)
+    .replaceAll("korean.browsertools.kr", new URL(siteUrl).hostname);
   fs.writeFileSync(file, content, "utf8");
 }
 

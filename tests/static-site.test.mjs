@@ -84,13 +84,14 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     const description = html.match(/<meta name="description" content="([^"]+)">/)?.[1];
     const structuredData = html.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)?.[1];
     assert.match(html, /<html lang="ko">/);
+    assert.match(html, /<meta name="google-adsense-account" content="ca-pub-1918444666278020">/);
     assert.match(html, /\/static\/tools\.js/);
     assert.match(html, /\/static\/visitor-counter-config\.js/);
     assert.match(html, /\/static\/visitor-counter\.js/);
-    assert.match(html, /https:\/\/korean\.browsertools\.kr/);
-    assert.match(html, /<link rel="canonical" href="https:\/\/korean\.browsertools\.kr/);
-    assert.match(html, /<link rel="shortcut icon" href="https:\/\/korean\.browsertools\.kr\/static\/favicon\.svg"/);
-    assert.match(html, /<meta property="og:image" content="https:\/\/korean\.browsertools\.kr\/static\/og-woonhae\.svg">/);
+    assert.match(html, /https:\/\/browsertools\.kr/);
+    assert.match(html, /<link rel="canonical" href="https:\/\/browsertools\.kr/);
+    assert.match(html, /<link rel="shortcut icon" href="https:\/\/browsertools\.kr\/static\/favicon\.svg"/);
+    assert.match(html, /<meta property="og:image" content="https:\/\/browsertools\.kr\/static\/og-woonhae\.svg">/);
     assert.match(html, /"@type":"FAQPage"/);
     assert.match(html, /class="seo-guide"/);
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
@@ -108,7 +109,8 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     assert.equal(fs.existsSync(path.join("static", asset)), true);
   }
   assert.match(fs.readFileSync("robots.txt", "utf8"), /User-agent: Yeti[\s\S]*Allow: \//);
-  assert.match(fs.readFileSync("sitemap.xml", "utf8"), /<lastmod>2026-07-26<\/lastmod>/);
+  assert.match(fs.readFileSync("sitemap.xml", "utf8"), /<lastmod>2026-09-03<\/lastmod>/);
+  assert.match(fs.readFileSync("ads.txt", "utf8"), /^google\.com, pub-1918444666278020, DIRECT, f08c47fec0942fa0\s*$/);
   assert.equal(fs.existsSync("a75c6419caef4302bc7c045bc45b49ed.txt"), true);
   assert.equal(fs.existsSync("aws/cloudfront-url-rewrite.js"), true);
   assert.equal(fs.existsSync("google-apps-script/visitor-counter.gs"), true);
@@ -122,4 +124,21 @@ test("CloudFront가 폴더형 주소를 정적 HTML로 연결한다", () => {
   assert.equal(cloudfront.handler({request: {uri: "/"}}).uri, "/index.html");
   assert.equal(cloudfront.handler({request: {uri: "/tools/currency/"}}).uri, "/tools/currency/index.html");
   assert.equal(cloudfront.handler({request: {uri: "/static/app.js"}}).uri, "/static/app.js");
+});
+
+test("CloudFront가 기존 한국어 서브도메인을 새 루트 도메인으로 이동시킨다", () => {
+  const cloudfront = {};
+  vm.createContext(cloudfront);
+  vm.runInContext(fs.readFileSync("aws/cloudfront-url-rewrite.js", "utf8"), cloudfront);
+
+  const response = cloudfront.handler({
+    request: {
+      uri: "/tools/currency/",
+      headers: {host: {value: "korean.browsertools.kr"}},
+      querystring: {amount: {value: "1000 원"}},
+    },
+  });
+
+  assert.equal(response.statusCode, 301);
+  assert.equal(response.headers.location.value, "https://browsertools.kr/tools/currency/?amount=1000%20%EC%9B%90");
 });
