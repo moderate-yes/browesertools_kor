@@ -85,6 +85,8 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     const structuredData = html.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)?.[1];
     assert.match(html, /<html lang="ko">/);
     assert.match(html, /<meta name="google-adsense-account" content="ca-pub-1918444666278020">/);
+    assert.equal((html.match(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-1918444666278020/g) || []).length, 1);
+    assert.match(html, /<script async src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-1918444666278020" crossorigin="anonymous"><\/script>/);
     assert.match(html, /\/static\/tools\.js/);
     assert.match(html, /\/static\/visitor-counter-config\.js/);
     assert.match(html, /\/static\/visitor-counter\.js/);
