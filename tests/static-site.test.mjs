@@ -125,20 +125,3 @@ test("CloudFront가 폴더형 주소를 정적 HTML로 연결한다", () => {
   assert.equal(cloudfront.handler({request: {uri: "/tools/currency/"}}).uri, "/tools/currency/index.html");
   assert.equal(cloudfront.handler({request: {uri: "/static/app.js"}}).uri, "/static/app.js");
 });
-
-test("CloudFront가 기존 한국어 서브도메인을 새 루트 도메인으로 이동시킨다", () => {
-  const cloudfront = {};
-  vm.createContext(cloudfront);
-  vm.runInContext(fs.readFileSync("aws/cloudfront-url-rewrite.js", "utf8"), cloudfront);
-
-  const response = cloudfront.handler({
-    request: {
-      uri: "/tools/currency/",
-      headers: {host: {value: "korean.browsertools.kr"}},
-      querystring: {amount: {value: "1000 원"}},
-    },
-  });
-
-  assert.equal(response.statusCode, 301);
-  assert.equal(response.headers.location.value, "https://browsertools.kr/tools/currency/?amount=1000%20%EC%9B%90");
-});

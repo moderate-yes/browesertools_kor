@@ -35,9 +35,7 @@ const files = [
 for (const relative of files) {
   const file = path.join(root, relative);
   const content = fs.readFileSync(file, "utf8")
-    .replaceAll("https://example.com", siteUrl)
-    .replaceAll("https://korean.browsertools.kr", siteUrl)
-    .replaceAll("korean.browsertools.kr", new URL(siteUrl).hostname);
+    .replaceAll("https://example.com", siteUrl);
   fs.writeFileSync(file, content, "utf8");
 }
 
