@@ -116,6 +116,10 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   for (const asset of ["style.css", "tools.js", "app.js", "visitor-counter-config.js", "visitor-counter.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg", "og-woonhae.svg", "woonhae-character.svg"]) {
     assert.equal(fs.existsSync(path.join("static", asset)), true);
   }
+  const character = fs.readFileSync("static/woonhae-character.svg", "utf8");
+  assert.match(character, /class="mouth"/);
+  assert.match(character, /@keyframes mouth-expression/);
+  assert.match(character, /prefers-reduced-motion:reduce/);
   assert.match(fs.readFileSync("robots.txt", "utf8"), /User-agent: Yeti[\s\S]*Allow: \//);
   assert.match(fs.readFileSync("sitemap.xml", "utf8"), /<lastmod>2026-09-03<\/lastmod>/);
   assert.match(fs.readFileSync("ads.txt", "utf8"), /^google\.com, pub-1918444666278020, DIRECT, f08c47fec0942fa0\s*$/);

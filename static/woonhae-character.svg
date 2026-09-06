@@ -1,6 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 517 473" role="img" aria-labelledby="title desc">
   <title id="title">WOONHAE character</title>
-  <desc id="desc">A simple line character with a smiling mouth</desc>
+  <desc id="desc">A simple line character with an animated smiling mouth</desc>
+  <style>
+    .mouth {
+      transform-box:fill-box;
+      transform-origin:center;
+      animation:mouth-expression 2.8s ease-in-out infinite;
+    }
+    @keyframes mouth-expression {
+      0%, 28%, 100% { transform:scale(1,1); }
+      38% { transform:scale(1.08,.28); }
+      50% { transform:scale(.9,1.22); }
+      62% { transform:scale(1.04,.58); }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      .mouth { animation:none; }
+    }
+  </style>
   <g fill="none" stroke="#11110f" stroke-linecap="square">
     <path d="M104 39H388" stroke-width="7"/>
     <path d="M37 111V385C37 429 65 457 108 457H390C434 457 462 429 462 385V105" stroke-width="7"/>
@@ -14,6 +30,6 @@
     </g>
     <path d="M219 343L244 359" stroke-width="6"/>
     <path d="M289 343L268 359" stroke-width="6"/>
-    <path d="M222 391Q254 419 286 391" stroke-width="6" stroke-linecap="round"/>
+    <path class="mouth" d="M222 391Q254 419 286 391" stroke-width="6" stroke-linecap="round"/>
   </g>
 </svg>
