@@ -696,11 +696,16 @@ html {
   background:var(--black);
   font:500 11px/1.4 "Noto Sans KR",sans-serif;
 }
-.visitor-counter[hidden] { display:none; }
 .visitor-counter__brand {
   margin-right:auto;
   font:900 12px/1 "DM Sans",sans-serif;
   letter-spacing:1.5px;
+}
+.visitor-counter__counts {
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:20px;
 }
 .visitor-counter strong {
   margin-left:4px;
@@ -710,5 +715,6 @@ html {
 @media (max-width:520px) {
   .visitor-counter { min-height:50px; gap:14px; padding:12px 20px; font-size:10px; }
   .visitor-counter__brand { font-size:11px; }
+  .visitor-counter__counts { gap:14px; }
   .visitor-counter strong { font-size:11px; }
 }

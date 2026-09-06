@@ -117,6 +117,12 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   assert.equal(fs.existsSync("aws/cloudfront-url-rewrite.js"), true);
   assert.equal(fs.existsSync("google-apps-script/visitor-counter.gs"), true);
   assert.equal(fs.existsSync(".github/workflows/deploy-s3.yml"), true);
+
+  const counterScript = fs.readFileSync("static/visitor-counter.js", "utf8");
+  assert.match(counterScript, /visitor-counter__brand">woonhae</);
+  assert.match(counterScript, />Today <strong data-visitor-today>/);
+  assert.match(counterScript, />Total <strong data-visitor-total>/);
+  assert.doesNotMatch(counterScript, /footer\.hidden = true/);
 });
 
 test("CloudFront가 폴더형 주소를 정적 HTML로 연결한다", () => {

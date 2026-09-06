@@ -27,9 +27,11 @@
     footer.className = "visitor-counter";
     footer.setAttribute("aria-label", "방문자 수");
     footer.innerHTML = [
-      '<span class="visitor-counter__brand">WOONHAE</span>',
-      '<span>오늘 <strong data-visitor-today>—</strong></span>',
-      '<span>전체 <strong data-visitor-total>—</strong></span>',
+      '<span class="visitor-counter__brand">woonhae</span>',
+      '<span class="visitor-counter__counts">',
+      '  <span>Today <strong data-visitor-today>—</strong></span>',
+      '  <span>Total <strong data-visitor-total>—</strong></span>',
+      '</span>',
     ].join("");
     document.body.appendChild(footer);
     return footer;
@@ -81,7 +83,6 @@
     const footer = createFooter();
     const config = window.DANSUM_VISITOR_COUNTER || {};
     if (!/^https:\/\/script\.google\.com\/macros\/s\//.test(config.endpoint || "")) {
-      footer.hidden = true;
       return;
     }
 
@@ -89,7 +90,6 @@
     const action = readCountedDate() === today ? "read" : "hit";
     requestCounts(config.endpoint, config.site || "browsertools.kr", action, function (counts) {
       if (!counts) {
-        footer.hidden = true;
         return;
       }
       footer.querySelector("[data-visitor-today]").textContent = counts.today.toLocaleString("ko-KR");
