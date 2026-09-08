@@ -84,15 +84,17 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     const description = html.match(/<meta name="description" content="([^"]+)">/)?.[1];
     const structuredData = html.match(/<script type="application\/ld\+json">([\s\S]+?)<\/script>/)?.[1];
     assert.match(html, /<html lang="ko">/);
-    assert.match(html, /<meta name="google-adsense-account" content="ca-pub-1918444666278020">/);
-    assert.equal((html.match(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-1918444666278020/g) || []).length, 1);
-    assert.match(html, /<script async src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-1918444666278020" crossorigin="anonymous"><\/script>/);
+    assert.match(html, /<meta name="google-adsense-account" content="ca-pub-3062467800658496">/);
+    assert.equal((html.match(/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-3062467800658496/g) || []).length, 1);
+    assert.match(html, /<script async src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js\?client=ca-pub-3062467800658496" crossorigin="anonymous"><\/script>/);
     assert.match(html, /\/static\/tools\.js/);
     assert.match(html, /\/static\/visitor-counter-config\.js/);
     assert.match(html, /\/static\/visitor-counter\.js/);
     assert.match(html, /https:\/\/browsertools\.kr/);
     assert.match(html, /<link rel="canonical" href="https:\/\/browsertools\.kr/);
-    assert.match(html, /<link rel="shortcut icon" href="https:\/\/browsertools\.kr\/static\/favicon\.svg"/);
+    assert.match(html, /<link rel="icon" href="\/favicon\.ico" sizes="any">/);
+    assert.match(html, /<link rel="icon" href="\/favicon-48x48\.png" type="image\/png" sizes="48x48">/);
+    assert.match(html, /<link rel="icon" href="\/static\/favicon\.svg" type="image\/svg\+xml">/);
     assert.match(html, /<meta property="og:image" content="https:\/\/browsertools\.kr\/static\/og-woonhae\.svg">/);
     if (page === "tools/info/index.html") {
       assert.match(html, /mailto:khh901001@proton\.me/);
@@ -116,17 +118,23 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   for (const asset of ["style.css", "tools.js", "app.js", "visitor-counter-config.js", "visitor-counter.js", "ai-converter.js", "functiongemma-worker.js", "favicon.svg", "og-woonhae.svg", "woonhae-character.svg"]) {
     assert.equal(fs.existsSync(path.join("static", asset)), true);
   }
+  for (const asset of ["favicon.ico", "favicon-48x48.png"]) {
+    assert.equal(fs.existsSync(asset), true);
+  }
   const character = fs.readFileSync("static/woonhae-character.svg", "utf8");
   assert.match(character, /class="mouth"/);
   assert.match(character, /@keyframes mouth-expression/);
   assert.match(character, /prefers-reduced-motion:reduce/);
   assert.match(fs.readFileSync("robots.txt", "utf8"), /User-agent: Yeti[\s\S]*Allow: \//);
   assert.match(fs.readFileSync("sitemap.xml", "utf8"), /<lastmod>2026-09-03<\/lastmod>/);
-  assert.match(fs.readFileSync("ads.txt", "utf8"), /^google\.com, pub-1918444666278020, DIRECT, f08c47fec0942fa0\s*$/);
+  assert.match(fs.readFileSync("ads.txt", "utf8"), /^google\.com, pub-3062467800658496, DIRECT, f08c47fec0942fa0\s*$/);
   assert.equal(fs.existsSync("a75c6419caef4302bc7c045bc45b49ed.txt"), true);
   assert.equal(fs.existsSync("aws/cloudfront-url-rewrite.js"), true);
   assert.equal(fs.existsSync("google-apps-script/visitor-counter.gs"), true);
   assert.equal(fs.existsSync(".github/workflows/deploy-s3.yml"), true);
+  const deployWorkflow = fs.readFileSync(".github/workflows/deploy-s3.yml", "utf8");
+  assert.match(deployWorkflow, /aws s3 cp favicon\.ico/);
+  assert.match(deployWorkflow, /aws s3 cp favicon-48x48\.png/);
 
   const counterScript = fs.readFileSync("static/visitor-counter.js", "utf8");
   assert.match(counterScript, /visitor-counter__brand">woonhae</);

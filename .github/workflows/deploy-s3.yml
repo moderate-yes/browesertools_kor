@@ -48,6 +48,14 @@ jobs:
             --content-type "text/html; charset=utf-8" \
             --cache-control "no-cache" \
             --only-show-errors
+          aws s3 cp favicon.ico "s3://${S3_BUCKET}/favicon.ico" \
+            --content-type "image/x-icon" \
+            --cache-control "public,max-age=86400" \
+            --only-show-errors
+          aws s3 cp favicon-48x48.png "s3://${S3_BUCKET}/favicon-48x48.png" \
+            --content-type "image/png" \
+            --cache-control "public,max-age=86400" \
+            --only-show-errors
           aws s3 cp googleab522432670c34d4.html "s3://${S3_BUCKET}/googleab522432670c34d4.html" \
             --content-type "text/html; charset=utf-8" \
             --cache-control "no-cache" \
