@@ -65,6 +65,15 @@ test("환율 조회를 브라우저 fetch로 처리한다", async () => {
   assert.equal(result.target, "KRW");
 });
 
+test("AI 모델 준비 전에도 내장 분류기로 자동 변환한다", async () => {
+  const unit = await tools.runTool("auto-convert", {text: "1센치를 미터로"});
+  const number = await tools.runTool("auto-convert", {text: "1 billion"});
+  const currency = await tools.runTool("auto-convert", {text: "100달러"});
+  assert.equal(unit.kind, "생활 단위");
+  assert.equal(number.kind, "숫자 단위");
+  assert.equal(currency.kind, "통화 환산");
+});
+
 test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   const pages = [
     "index.html",
@@ -135,6 +144,14 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   const deployWorkflow = fs.readFileSync(".github/workflows/deploy-s3.yml", "utf8");
   assert.match(deployWorkflow, /aws s3 cp favicon\.ico/);
   assert.match(deployWorkflow, /aws s3 cp favicon-48x48\.png/);
+
+  const aiConverter = fs.readFileSync("static/ai-converter.js", "utf8");
+  const aiWorker = fs.readFileSync("static/functiongemma-worker.js", "utf8");
+  assert.match(aiWorker, /dtype: "q4f16"/);
+  assert.doesNotMatch(aiWorker, /dtype: "q4"/);
+  assert.match(aiConverter, /submitButton\.disabled = false/);
+  assert.match(aiConverter, /decision \? hints\[decision\.tool\] : null/);
+  assert.match(aiConverter, /AI 분류 시간이 초과되었습니다/);
 
   const counterScript = fs.readFileSync("static/visitor-counter.js", "utf8");
   assert.match(counterScript, /visitor-counter__brand">woonhae</);

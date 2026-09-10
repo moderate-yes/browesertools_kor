@@ -41,7 +41,7 @@ async function loadModel(cached) {
     }
     tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {progress_callback: progress});
     model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
-      dtype: "q4",
+      dtype: "q4f16",
       device: "webgpu",
       progress_callback: progress
     });
