@@ -7,7 +7,7 @@
   const status = document.querySelector("[data-model-status]");
   const statusLabel = status?.querySelector("strong");
   const statusDetail = status?.querySelector("small");
-  const worker = new Worker("/static/functiongemma-worker.js?v=10", {type: "module"});
+  const worker = new Worker("/static/functiongemma-worker.js?v=11", {type: "module"});
   let ready = false;
   let requestId = 0;
   const pending = new Map();
@@ -120,7 +120,8 @@
       if (ready) {
         try {
           decision = await classify(input);
-        } catch (_) {
+        } catch (error) {
+          console.error("FunctionGemma classification failed:", error);
           decision = null;
         }
       }
