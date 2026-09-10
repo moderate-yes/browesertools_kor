@@ -148,6 +148,7 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   const aiConverter = fs.readFileSync("static/ai-converter.js", "utf8");
   const aiWorker = fs.readFileSync("static/functiongemma-worker.js", "utf8");
   assert.match(aiWorker, /dtype: "q4f16"/);
+  assert.match(aiWorker, /max_new_tokens: 32/);
   assert.doesNotMatch(aiWorker, /dtype: "q4"/);
   assert.match(aiWorker, /MODEL_ID = "browsertools-functiongemma-270m-v2"/);
   assert.match(aiWorker, /env\.localModelPath = "\/models\/"/);

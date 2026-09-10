@@ -7,7 +7,7 @@
   const status = document.querySelector("[data-model-status]");
   const statusLabel = status?.querySelector("strong");
   const statusDetail = status?.querySelector("small");
-  const worker = new Worker("/static/functiongemma-worker.js?v=11", {type: "module"});
+  const worker = new Worker("/static/functiongemma-worker.js?v=12", {type: "module"});
   let ready = false;
   let requestId = 0;
   const pending = new Map();

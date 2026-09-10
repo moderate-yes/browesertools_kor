@@ -82,13 +82,13 @@ async function classify(id, text) {
     const inputs = tokenizer(buildPrompt(text), {padding: false, truncation: false});
     const output = await model.generate({
       ...inputs,
-      max_new_tokens: 6,
+      max_new_tokens: 32,
       do_sample: false
     });
     const inputLength = inputs.input_ids.dims[1];
     const decoded = tokenizer.decode(output.slice(0, [inputLength, null]), {skip_special_tokens: false});
     const match = decoded.match(/(convert_number|convert_currency|convert_unit|request_clarification|unsupported_request)/);
-    if (!match) throw new Error("AI가 변환 종류를 결정하지 못했습니다. 단위를 조금 더 구체적으로 입력해 주세요.");
+    if (!match) throw new Error(`AI가 변환 종류를 결정하지 못했습니다: ${decoded.slice(-160)}`);
     self.postMessage({type: "result", id, tool: match[1], raw: decoded, modelMs: performance.now() - started});
   } catch (error) {
     self.postMessage({type: "request-error", id, error: error.message || String(error)});
