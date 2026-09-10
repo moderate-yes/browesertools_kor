@@ -58,28 +58,26 @@ async function loadModel(cached) {
   }
 }
 
-function escaped(value) {
-  return `<escape>${String(value)}<escape>`;
-}
-
-function functionDeclaration(tool) {
-  const fn = tool.function;
-  return `<start_function_declaration>declaration:${fn.name}`
-    + `{description:${escaped(fn.description || "")}}`
-    + `<end_function_declaration>`;
-}
-
-function buildPrompt(text) {
-  const declarations = TOOLS.map(functionDeclaration).join("");
-  return `${tokenizer.bos_token || "<bos>"}<start_of_turn>developer\n`
-    + `You are a model that can do function calling with the following functions${declarations}<end_of_turn>\n`
-    + `<start_of_turn>user\n${text.trim()}<end_of_turn>\n<start_of_turn>model\n<start_function_call>call:`;
+function buildInputs(text) {
+  return tokenizer.apply_chat_template([
+    {
+      role: "developer",
+      content: "Choose exactly one function that best matches the user's conversion request."
+    },
+    {role: "user", content: text.trim()}
+  ], {
+    tools: TOOLS,
+    add_generation_prompt: true,
+    tokenize: true,
+    return_tensor: true,
+    return_dict: true
+  });
 }
 
 async function classify(id, text) {
   const started = performance.now();
   try {
-    const inputs = tokenizer(buildPrompt(text), {padding: false, truncation: false});
+    const inputs = buildInputs(text);
     const output = await model.generate({
       ...inputs,
       max_new_tokens: 32,
