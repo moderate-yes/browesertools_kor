@@ -19,7 +19,6 @@ env.allowRemoteModels = false;
 env.localModelPath = "/models/";
 let tokenizer;
 let model;
-let chatTemplate;
 let backend = "WebGPU";
 
 function progress(update = {}) {
@@ -43,9 +42,6 @@ async function loadModel(cached) {
     if (!self.navigator.gpu) {
       throw new Error("이 브라우저에서 WebGPU를 사용할 수 없습니다. 최신 Chrome 또는 Edge에서 열어 주세요.");
     }
-    const templateResponse = await fetch(`/models/${MODEL_ID}/chat_template.jinja`);
-    if (!templateResponse.ok) throw new Error("FunctionGemma 채팅 템플릿을 불러오지 못했습니다.");
-    chatTemplate = await templateResponse.text();
     tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {progress_callback: progress});
     model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
       dtype: "q4f16",
@@ -62,21 +58,32 @@ async function loadModel(cached) {
   }
 }
 
+function escaped(value) {
+  return `<escape>${String(value)}<escape>`;
+}
+
+function functionDeclaration(tool) {
+  const fn = tool.function;
+  const parameters = fn.parameters || {};
+  const properties = Object.entries(parameters.properties || {}).map(([name, schema]) => {
+    const enumPart = Array.isArray(schema.enum)
+      ? `,enum:[${schema.enum.map(escaped).join(",")}]`
+      : "";
+    return `${name}:{description:${escaped(schema.description || "")}${enumPart},type:${escaped((schema.type || "string").toUpperCase())}}`;
+  }).join(",");
+  const required = (parameters.required || []).map(escaped).join(",");
+  return `<start_function_declaration>declaration:${fn.name}`
+    + `{description:${escaped(fn.description || "")}`
+    + `,parameters:{properties:{${properties}},required:[${required}],type:${escaped((parameters.type || "object").toUpperCase())}}}`
+    + `<end_function_declaration>`;
+}
+
 function buildInputs(text) {
-  return tokenizer.apply_chat_template([
-    {
-      role: "developer",
-      content: "Choose exactly one function that best matches the user's conversion request."
-    },
-    {role: "user", content: text.trim()}
-  ], {
-    chat_template: chatTemplate,
-    tools: TOOLS,
-    add_generation_prompt: true,
-    tokenize: true,
-    return_tensor: true,
-    return_dict: true
-  });
+  const declarations = TOOLS.map(functionDeclaration).join("");
+  const prompt = `${tokenizer.bos_token || "<bos>"}<start_of_turn>developer\n`
+    + `Choose exactly one function that best matches the user's conversion request.${declarations}<end_of_turn>\n`
+    + `<start_of_turn>user\n${text.trim()}<end_of_turn>\n<start_of_turn>model\n`;
+  return tokenizer(prompt, {padding: false, truncation: false});
 }
 
 async function classify(id, text) {
