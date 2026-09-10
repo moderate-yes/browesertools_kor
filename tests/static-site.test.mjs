@@ -150,6 +150,8 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   assert.match(aiWorker, /dtype: "q4f16"/);
   assert.match(aiWorker, /max_new_tokens: 32/);
   assert.match(aiWorker, /tokenizer\.apply_chat_template/);
+  assert.match(aiWorker, /chat_template: chatTemplate/);
+  assert.match(aiWorker, /chat_template\.jinja/);
   assert.match(aiWorker, /add_generation_prompt: true/);
   assert.match(aiWorker, /tools: TOOLS/);
   assert.doesNotMatch(aiWorker, /dtype: "q4"/);

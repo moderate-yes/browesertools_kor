@@ -19,6 +19,7 @@ env.allowRemoteModels = false;
 env.localModelPath = "/models/";
 let tokenizer;
 let model;
+let chatTemplate;
 let backend = "WebGPU";
 
 function progress(update = {}) {
@@ -42,6 +43,9 @@ async function loadModel(cached) {
     if (!self.navigator.gpu) {
       throw new Error("이 브라우저에서 WebGPU를 사용할 수 없습니다. 최신 Chrome 또는 Edge에서 열어 주세요.");
     }
+    const templateResponse = await fetch(`/models/${MODEL_ID}/chat_template.jinja`);
+    if (!templateResponse.ok) throw new Error("FunctionGemma 채팅 템플릿을 불러오지 못했습니다.");
+    chatTemplate = await templateResponse.text();
     tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {progress_callback: progress});
     model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
       dtype: "q4f16",
@@ -66,6 +70,7 @@ function buildInputs(text) {
     },
     {role: "user", content: text.trim()}
   ], {
+    chat_template: chatTemplate,
     tools: TOOLS,
     add_generation_prompt: true,
     tokenize: true,
