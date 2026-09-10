@@ -149,9 +149,15 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   const aiWorker = fs.readFileSync("static/functiongemma-worker.js", "utf8");
   assert.match(aiWorker, /dtype: "q4f16"/);
   assert.doesNotMatch(aiWorker, /dtype: "q4"/);
+  assert.match(aiWorker, /MODEL_ID = "browsertools-functiongemma-270m-v2"/);
+  assert.match(aiWorker, /env\.localModelPath = "\/models\/"/);
+  assert.match(aiWorker, /env\.allowRemoteModels = false/);
   assert.match(aiConverter, /submitButton\.disabled = false/);
   assert.match(aiConverter, /decision \? hints\[decision\.tool\] : null/);
   assert.match(aiConverter, /AI 분류 시간이 초과되었습니다/);
+  assert.equal(fs.existsSync("scripts/rebuild_q4f16.py"), true);
+  assert.match(deployWorkflow, /Prepare browser-compatible FunctionGemma model/);
+  assert.match(deployWorkflow, /scripts\/rebuild_q4f16\.py/);
 
   const counterScript = fs.readFileSync("static/visitor-counter.js", "utf8");
   assert.match(counterScript, /visitor-counter__brand">woonhae</);

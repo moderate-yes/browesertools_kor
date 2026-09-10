@@ -35,6 +35,35 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Prepare browser-compatible FunctionGemma model
+        run: |
+          MODEL_PREFIX="models/browsertools-functiongemma-270m-v2"
+          MODEL_KEY="${MODEL_PREFIX}/onnx/model_q4f16.onnx"
+          if aws s3api head-object --bucket "${S3_BUCKET}" --key "${MODEL_KEY}" >/dev/null 2>&1; then
+            echo "Browser AI model is already available."
+            exit 0
+          fi
+
+          python -m pip install --disable-pip-version-check \
+            onnx==1.22.0 onnxruntime==1.29.0
+          mkdir -p /tmp/browsertools-model/onnx
+          curl --location --fail --retry 3 \
+            "https://huggingface.co/janyty/browsertools-functiongemma-270m-ONNX/resolve/main/onnx/model_q4.onnx" \
+            --output /tmp/browsertools-model/model_q4.onnx
+          python scripts/rebuild_q4f16.py \
+            /tmp/browsertools-model/model_q4.onnx \
+            /tmp/browsertools-model/onnx/model_q4f16.onnx
+          rm /tmp/browsertools-model/model_q4.onnx
+
+          for file in config.json generation_config.json tokenizer.json tokenizer_config.json special_tokens_map.json chat_template.jinja; do
+            curl --location --fail --retry 3 \
+              "https://huggingface.co/janyty/browsertools-functiongemma-270m-ONNX/resolve/main/${file}" \
+              --output "/tmp/browsertools-model/${file}"
+          done
+          aws s3 sync /tmp/browsertools-model "s3://${S3_BUCKET}/${MODEL_PREFIX}" \
+            --cache-control "public,max-age=31536000,immutable" \
+            --only-show-errors
+
       - name: Upload static assets
         run: |
           aws s3 sync static "s3://${S3_BUCKET}/static" \

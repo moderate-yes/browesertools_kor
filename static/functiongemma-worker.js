@@ -4,7 +4,7 @@ import {
   env
 } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
 
-const MODEL_ID = "janyty/browsertools-functiongemma-270m-ONNX";
+const MODEL_ID = "browsertools-functiongemma-270m-v2";
 const TOOLS = [
   {type: "function", function: {name: "convert_number", description: "Convert English and Korean number units.", parameters: {type: "object", properties: {query: {type: "string"}}, required: ["query"]}}},
   {type: "function", function: {name: "convert_currency", description: "Convert currencies when an amount and currency are present.", parameters: {type: "object", properties: {query: {type: "string"}}, required: ["query"]}}},
@@ -14,6 +14,9 @@ const TOOLS = [
 ];
 
 env.useBrowserCache = true;
+env.allowLocalModels = true;
+env.allowRemoteModels = false;
+env.localModelPath = "/models/";
 let tokenizer;
 let model;
 let backend = "WebGPU";
