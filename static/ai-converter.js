@@ -56,7 +56,7 @@
       const timeout = setTimeout(() => {
         pending.delete(id);
         reject(new Error("AI 분류 시간이 초과되었습니다."));
-      }, 10000);
+      }, 30000);
       pending.set(id, {
         resolve(message) {
           clearTimeout(timeout);
