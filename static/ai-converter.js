@@ -7,7 +7,7 @@
   const status = document.querySelector("[data-model-status]");
   const statusLabel = status?.querySelector("strong");
   const statusDetail = status?.querySelector("small");
-  const worker = new Worker("/static/functiongemma-worker.js?v=15", {type: "module"});
+  const worker = new Worker("/static/functiongemma-worker.js?v=16", {type: "module"});
   let ready = false;
   let requestId = 0;
   const pending = new Map();
@@ -81,7 +81,7 @@
     if (message.type === "ready") {
       ready = true;
       submitButton.disabled = false;
-      localStorage.setItem("dansum-functiongemma-q4f16-cached", "1");
+      localStorage.setItem("dansum-functiongemma-q4-v3-cached", "1");
       const source = message.cached ? "브라우저 캐시" : "최초 다운로드";
       setStatus("AI 준비 완료", `${source} · ${message.backend} · ${Math.round(message.loadMs)}ms`, "ready");
       return;
@@ -153,7 +153,7 @@
     }
   });
 
-  const cached = localStorage.getItem("dansum-functiongemma-q4f16-cached") === "1";
+  const cached = localStorage.getItem("dansum-functiongemma-q4-v3-cached") === "1";
   submitButton.disabled = false;
   setStatus("빠른 변환 사용 가능", cached ? "저장된 AI 모델을 여는 중" : "AI 모델은 백그라운드에서 준비됩니다", "ready");
   worker.postMessage({type: "load", cached});

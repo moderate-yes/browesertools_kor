@@ -37,7 +37,7 @@
   <script src="/static/visitor-counter-config.js" defer></script>
   <script src="/static/visitor-counter.js?v=gsheets-2" defer></script>
   <script src="/static/app.js" defer></script>
-  <script src="/static/ai-converter.js?v=functiongemma-webgpu-14" defer></script>
+  <script src="/static/ai-converter.js?v=functiongemma-webgpu-15" defer></script>
 </head>
 <body class="tool-page compact-tool theme-pink">
   
@@ -128,7 +128,7 @@
             <li><b>01</b><span><strong>함수 선택</strong>숫자·통화·생활 단위·추가 질문 중 알맞은 동작을 고릅니다.</span></li>
             <li><b>02</b><span><strong>미세조정</strong>FunctionGemma 270M을 학습 데이터로 맞춤 조정합니다.</span></li>
             <li><b>03</b><span><strong>분리 평가</strong>학습에 쓰지 않은 검증·테스트 입력으로 정확도를 확인합니다.</span></li>
-            <li><b>04</b><span><strong>브라우저 배포</strong>통과한 모델만 ONNX q4f16으로 줄여 WebGPU에서 실행합니다.</span></li>
+            <li><b>04</b><span><strong>브라우저 배포</strong>통과한 모델을 ONNX q4로 줄여 WebGPU에서 실행합니다.</span></li>
           </ol>
         </div>
 
@@ -145,7 +145,7 @@
             <div><dt>추가 질문</dt><dd>16 / 16</dd></div>
             <div><dt>지원 밖 요청</dt><dd>13 / 13</dd></div>
           </dl>
-          <p class="ai-caption">Hugging Face에 공개된 최신 독립 평가 결과입니다. ONNX q4f16 브라우저 모델은 같은 맞춤 학습 가중치를 사용하며, 실제 기기 속도는 위 변환 결과에 표시됩니다.</p>
+          <p class="ai-caption">Hugging Face에 공개된 최신 독립 평가 결과입니다. ONNX q4 브라우저 모델은 같은 맞춤 학습 가중치를 사용하며, 실제 기기 속도는 위 변환 결과에 표시됩니다.</p>
         </div>
 
         <div class="ai-study-block">
@@ -199,7 +199,7 @@
             <li><b>02</b><span><strong>합성 패턴의 영향</strong>학습·평가 문장이 비슷한 생성 규칙을 공유해 실사용자의 오타, 사투리, 새로운 혼합 표현은 충분히 반영되지 않았을 수 있습니다.</span></li>
             <li><b>03</b><span><strong>분류 수의 차이</strong>생활 단위는 187개지만 지원 밖 요청은 13개뿐이라, 적은 분류의 100%는 상대적으로 불확실성이 큽니다.</span></li>
             <li><b>04</b><span><strong>함수 선택만 평가</strong>환율의 최신성, 계산 결과, 네트워크 오류까지 포함한 서비스 전체 정확도가 아니라 올바른 함수를 골랐는지를 측정했습니다.</span></li>
-            <li><b>05</b><span><strong>브라우저용 q4f16 양자화</strong>공개 평가는 미세조정 원본 모델 기준입니다. ONNX q4f16 변환 후에도 같은 336개를 별도로 전수 평가해야 완전히 같은 정확도라고 말할 수 있습니다.</span></li>
+            <li><b>05</b><span><strong>브라우저용 q4 양자화</strong>공개 평가는 미세조정 원본 모델 기준입니다. ONNX q4 변환 후에도 같은 336개를 별도로 전수 평가해야 완전히 같은 정확도라고 말할 수 있습니다.</span></li>
           </ul>
           <p class="ai-caption"><b>따라서 100%는 “현재 독립 테스트 336개에서 함수 선택 오류 0개”로 해석해야 합니다.</b> 실제 입력 범위를 계속 넓혀 재평가할 예정입니다.</p>
         </div>

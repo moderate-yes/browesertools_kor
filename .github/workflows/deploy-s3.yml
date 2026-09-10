@@ -35,25 +35,19 @@ jobs:
           role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Prepare browser-compatible FunctionGemma model
+      - name: Prepare self-hosted FunctionGemma model
         run: |
-          MODEL_PREFIX="models/browsertools-functiongemma-270m-v2"
-          MODEL_KEY="${MODEL_PREFIX}/onnx/model_q4f16.onnx"
+          MODEL_PREFIX="models/browsertools-functiongemma-270m-v3"
+          MODEL_KEY="${MODEL_PREFIX}/onnx/model_q4.onnx"
           if aws s3api head-object --bucket "${S3_BUCKET}" --key "${MODEL_KEY}" >/dev/null 2>&1; then
             echo "Browser AI model is already available."
             exit 0
           fi
 
-          python -m pip install --disable-pip-version-check \
-            onnx==1.22.0 onnxruntime==1.29.0
           mkdir -p /tmp/browsertools-model/onnx
           curl --location --fail --retry 3 \
             "https://huggingface.co/janyty/browsertools-functiongemma-270m-ONNX/resolve/main/onnx/model_q4.onnx" \
-            --output /tmp/browsertools-model/model_q4.onnx
-          python scripts/rebuild_q4f16.py \
-            /tmp/browsertools-model/model_q4.onnx \
-            /tmp/browsertools-model/onnx/model_q4f16.onnx
-          rm /tmp/browsertools-model/model_q4.onnx
+            --output /tmp/browsertools-model/onnx/model_q4.onnx
 
           for file in config.json generation_config.json tokenizer.json tokenizer_config.json special_tokens_map.json chat_template.jinja; do
             curl --location --fail --retry 3 \

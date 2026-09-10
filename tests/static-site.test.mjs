@@ -147,21 +147,22 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
 
   const aiConverter = fs.readFileSync("static/ai-converter.js", "utf8");
   const aiWorker = fs.readFileSync("static/functiongemma-worker.js", "utf8");
-  assert.match(aiWorker, /dtype: "q4f16"/);
+  assert.match(aiWorker, /dtype: "q4"/);
   assert.match(aiWorker, /max_new_tokens: 32/);
   assert.match(aiWorker, /<start_function_declaration>declaration:/);
   assert.match(aiWorker, /<start_of_turn>model\\n/);
   assert.doesNotMatch(aiWorker, /<start_function_call>call:`/);
-  assert.doesNotMatch(aiWorker, /dtype: "q4"/);
-  assert.match(aiWorker, /MODEL_ID = "browsertools-functiongemma-270m-v2"/);
+  assert.doesNotMatch(aiWorker, /q4f16/);
+  assert.match(aiWorker, /MODEL_ID = "browsertools-functiongemma-270m-v3"/);
   assert.match(aiWorker, /env\.localModelPath = "\/models\/"/);
   assert.match(aiWorker, /env\.allowRemoteModels = false/);
   assert.match(aiConverter, /submitButton\.disabled = false/);
   assert.match(aiConverter, /decision \? hints\[decision\.tool\] : null/);
   assert.match(aiConverter, /AI 분류 시간이 초과되었습니다/);
-  assert.equal(fs.existsSync("scripts/rebuild_q4f16.py"), true);
-  assert.match(deployWorkflow, /Prepare browser-compatible FunctionGemma model/);
-  assert.match(deployWorkflow, /scripts\/rebuild_q4f16\.py/);
+  assert.equal(fs.existsSync("scripts/rebuild_q4f16.py"), false);
+  assert.match(deployWorkflow, /Prepare self-hosted FunctionGemma model/);
+  assert.match(deployWorkflow, /model_q4\.onnx/);
+  assert.doesNotMatch(deployWorkflow, /rebuild_q4f16/);
 
   const counterScript = fs.readFileSync("static/visitor-counter.js", "utf8");
   assert.match(counterScript, /visitor-counter__brand">woonhae</);

@@ -4,7 +4,7 @@ import {
   env
 } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
 
-const MODEL_ID = "browsertools-functiongemma-270m-v2";
+const MODEL_ID = "browsertools-functiongemma-270m-v3";
 const TOOLS = [
   {type: "function", function: {name: "convert_number", description: "Convert English and Korean number units.", parameters: {type: "object", properties: {query: {type: "string"}}, required: ["query"]}}},
   {type: "function", function: {name: "convert_currency", description: "Convert currencies when an amount and currency are present.", parameters: {type: "object", properties: {query: {type: "string"}}, required: ["query"]}}},
@@ -44,7 +44,7 @@ async function loadModel(cached) {
     }
     tokenizer = await AutoTokenizer.from_pretrained(MODEL_ID, {progress_callback: progress});
     model = await AutoModelForCausalLM.from_pretrained(MODEL_ID, {
-      dtype: "q4f16",
+      dtype: "q4",
       device: "webgpu",
       progress_callback: progress
     });
