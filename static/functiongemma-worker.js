@@ -47,7 +47,11 @@ async function loadModel(cached) {
     });
     self.postMessage({type: "ready", cached, backend, loadMs: performance.now() - started});
   } catch (error) {
-    self.postMessage({type: "load-error", error: error.message || String(error)});
+    self.postMessage({
+      type: "load-error",
+      error: error.message || String(error),
+      stack: error.stack || ""
+    });
   }
 }
 

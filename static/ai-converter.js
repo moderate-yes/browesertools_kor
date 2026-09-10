@@ -7,7 +7,7 @@
   const status = document.querySelector("[data-model-status]");
   const statusLabel = status?.querySelector("strong");
   const statusDetail = status?.querySelector("small");
-  const worker = new Worker("/static/functiongemma-worker.js?v=8", {type: "module"});
+  const worker = new Worker("/static/functiongemma-worker.js?v=9", {type: "module"});
   let ready = false;
   let requestId = 0;
   const pending = new Map();
@@ -87,6 +87,7 @@
       return;
     }
     if (message.type === "load-error") {
+      console.error("FunctionGemma model load failed:", message.error, message.stack || "");
       setStatus("빠른 변환 사용 가능", "AI 모델을 열지 못해 내장 분류기로 작동합니다", "ready");
       return;
     }
