@@ -65,6 +65,17 @@ test("환율 조회를 브라우저 fetch로 처리한다", async () => {
   assert.equal(result.target, "KRW");
 });
 
+test("유로와 영국 파운드를 원화로 환산한다", async () => {
+  const euro = await tools.runTool("eur-gbp-krw", {amount: "10 euros"});
+  const pound = await tools.runTool("eur-gbp-krw", {amount: "10 pounds"});
+  assert.equal(euro.display, "13,503원");
+  assert.equal(euro.source, "EUR");
+  assert.equal(euro.target, "KRW");
+  assert.equal(pound.display, "13,503원");
+  assert.equal(pound.source, "GBP");
+  assert.equal(pound.target, "KRW");
+});
+
 test("AI 모델 준비 전에도 내장 분류기로 자동 변환한다", async () => {
   const unit = await tools.runTool("auto-convert", {text: "1센치를 미터로"});
   const number = await tools.runTool("auto-convert", {text: "1 billion"});
@@ -78,6 +89,7 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
   const pages = [
     "index.html",
     "tools/currency/index.html",
+    "tools/euro-pound/index.html",
     "tools/unit/index.html",
     "tools/margin/index.html",
     "tools/character-count/index.html",
@@ -99,6 +111,7 @@ test("모든 정적 페이지와 필수 자산이 존재한다", () => {
     assert.match(html, /\/static\/tools\.js/);
     assert.match(html, /\/static\/visitor-counter-config\.js/);
     assert.match(html, /\/static\/visitor-counter\.js/);
+    assert.match(html, /href="\/tools\/euro-pound\/"/);
     assert.match(html, /https:\/\/browsertools\.kr/);
     assert.match(html, /<link rel="canonical" href="https:\/\/browsertools\.kr/);
     assert.match(html, /<link rel="icon" href="\/favicon\.ico" sizes="any">/);
@@ -177,5 +190,6 @@ test("CloudFront가 폴더형 주소를 정적 HTML로 연결한다", () => {
   vm.runInContext(fs.readFileSync("aws/cloudfront-url-rewrite.js", "utf8"), cloudfront);
   assert.equal(cloudfront.handler({request: {uri: "/"}}).uri, "/index.html");
   assert.equal(cloudfront.handler({request: {uri: "/tools/currency/"}}).uri, "/tools/currency/index.html");
+  assert.equal(cloudfront.handler({request: {uri: "/tools/euro-pound/"}}).uri, "/tools/euro-pound/index.html");
   assert.equal(cloudfront.handler({request: {uri: "/static/app.js"}}).uri, "/static/app.js");
 });

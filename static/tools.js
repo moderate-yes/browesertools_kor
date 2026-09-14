@@ -339,8 +339,8 @@
     USD: ["미국달러", "달러", "불", "usd", "$"],
     KRW: ["대한민국원", "한국돈", "한화", "원화", "krw", "원", "₩"],
     JPY: ["일본엔", "엔화", "jpy", "엔", "¥"],
-    EUR: ["유로화", "eur", "유로", "€"],
-    GBP: ["영국파운드", "파운드화", "gbp", "파운드", "£"],
+    EUR: ["유로화", "euros", "euro", "eur", "유로", "€"],
+    GBP: ["영국파운드", "파운드화", "pounds", "pound", "gbp", "파운드", "£"],
     CNY: ["중국위안", "위안화", "cny", "위안"],
     TWD: ["대만달러", "twd"],
     HKD: ["홍콩달러", "hkd"],
@@ -476,6 +476,16 @@
     return convertCurrencyPair(currencyValue(text, source), source[2], target);
   }
 
+  async function calculateEuroPoundToKrw(data) {
+    if (typeof data.amount !== "string" || !data.amount.trim()) {
+      throw new InputError("환산할 유로 또는 파운드 금액을 입력해 주세요.");
+    }
+    const text = data.amount.toLowerCase().replace(/\s+/g, "");
+    const source = currencyOccurrences(text).find(item => item[2] === "EUR" || item[2] === "GBP");
+    if (!source) throw new InputError("예: 10유로 또는 10파운드처럼 입력해 주세요.");
+    return convertCurrencyPair(currencyValue(text, source), source[2], "KRW");
+  }
+
   function cleanList(text) {
     if (typeof text !== "string" || !text.trim()) throw new InputError("정리할 명단을 입력해 주세요.");
     if (text.length > 50000) throw new InputError("명단은 50,000자 이하로 입력해 주세요.");
@@ -530,7 +540,7 @@
     const hinted = {"english-number": englishResult, unit: unitResult, "korean-amount": amountResult, currency: currencyResult};
     if (hint in hinted) return hinted[hint]();
     if (/(?:billion|million|trillion|thousand|빌리언|밀리언|트릴리언|사우전드|\bbn\b|\btn\b)/i.test(value)) return englishResult();
-    if (/(?:달러|한화|원화|엔화|유로|위안|usd|krw|jpy|eur|[$€¥₩])/i.test(value)) return currencyResult();
+    if (/(?:달러|한화|원화|엔화|유로|파운드|위안|usd|krw|jpy|eur|gbp|euro|pound|[$€£¥₩])/i.test(value)) return currencyResult();
     if (/[평㎡]|(?:cm|inch|인치|센치|미터|피트|킬로|파운드|온스|섭씨|화씨)\s*$/i.test(value)) return unitResult();
     if (value.endsWith("원") || value.endsWith("원정") || /[만억조경]/.test(value)) return amountResult();
     for (const converter of [englishResult, unitResult, amountResult]) {
@@ -546,6 +556,7 @@
     "clean-list": data => cleanList(data.text),
     "character-count": data => countText(data.text),
     currency: calculateCurrency,
+    "eur-gbp-krw": calculateEuroPoundToKrw,
     "auto-convert": data => automaticConversion(data.text, data.hint),
   };
 

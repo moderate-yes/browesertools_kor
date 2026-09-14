@@ -6,7 +6,8 @@ const formatters = {
   ,"character-count": r => `<div class="result-grid count-grid"><div><span>공백 포함</span><strong>${r.with_spaces.toLocaleString()}자</strong></div><div><span>공백 제외</span><strong>${r.without_spaces.toLocaleString()}자</strong></div><div><span>단어</span><strong>${r.words.toLocaleString()}개</strong></div><div><span>줄</span><strong>${r.lines.toLocaleString()}줄</strong></div><div><span>UTF-8</span><strong>${r.bytes.toLocaleString()} bytes</strong></div></div>`,
   currency: r => r.mode === "both"
     ? `<span>통화 단위가 없어 두 방향을 모두 계산했습니다.</span><div class="result-grid"><div><span>${escapeHtml(r.amount)}달러 → 원화</span><strong>${escapeHtml(r.usd_to_krw.display)}</strong></div><div><span>${escapeHtml(r.amount)}원 → 달러</span><strong>${escapeHtml(r.krw_to_usd.display)}</strong></div></div><small>${escapeHtml(r.usd_to_krw.date)} 기준</small>`
-    : `<span>${escapeHtml(r.source)} → ${escapeHtml(r.target)} · ${escapeHtml(r.date)} 기준</span><strong>${escapeHtml(r.display)}</strong><small>${escapeHtml(r.rate)}</small>`
+    : `<span>${escapeHtml(r.source)} → ${escapeHtml(r.target)} · ${escapeHtml(r.date)} 기준</span><strong>${escapeHtml(r.display)}</strong><small>${escapeHtml(r.rate)}</small>`,
+  "eur-gbp-krw": r => `<span>${escapeHtml(r.source)} → KRW · ${escapeHtml(r.date)} 기준</span><strong>${escapeHtml(r.display)}</strong><small>${escapeHtml(r.rate)}</small>`
 };
 
 function escapeHtml(value) {
