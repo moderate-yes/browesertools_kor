@@ -60,7 +60,7 @@ test("목록 정리와 글자 수 계산을 브라우저에서 처리한다", as
 
 test("환율 조회를 브라우저 fetch로 처리한다", async () => {
   const result = await tools.runTool("currency", {amount: "100달러"});
-  assert.equal(result.display, "135,025원");
+  assert.equal(result.display, "13만 5,025원 (135,025원)");
   assert.equal(result.source, "USD");
   assert.equal(result.target, "KRW");
 });
@@ -68,12 +68,17 @@ test("환율 조회를 브라우저 fetch로 처리한다", async () => {
 test("유로와 영국 파운드를 원화로 환산한다", async () => {
   const euro = await tools.runTool("eur-gbp-krw", {amount: "10 euros"});
   const pound = await tools.runTool("eur-gbp-krw", {amount: "10 pounds"});
-  assert.equal(euro.display, "13,503원");
+  assert.equal(euro.display, "1만 3,503원 (13,503원)");
   assert.equal(euro.source, "EUR");
   assert.equal(euro.target, "KRW");
-  assert.equal(pound.display, "13,503원");
+  assert.equal(pound.display, "1만 3,503원 (13,503원)");
   assert.equal(pound.source, "GBP");
   assert.equal(pound.target, "KRW");
+});
+
+test("큰 원화 결과를 한글 단위와 숫자로 함께 표시한다", async () => {
+  const result = await tools.runTool("currency", {amount: "134623.95852619884달러"});
+  assert.equal(result.display, "1억 8,177만 6천원 (181,776,000원)");
 });
 
 test("AI 모델 준비 전에도 내장 분류기로 자동 변환한다", async () => {

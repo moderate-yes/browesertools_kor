@@ -200,6 +200,24 @@
     return {number: `${formatNumber(integer, 0)}원`, korean: `${reading} 원`, formal: `금 ${reading} 원정`};
   }
 
+  function formatWonDisplay(raw) {
+    const integer = Math.round(Number(raw));
+    let remainder = integer;
+    const parts = [];
+    for (const [size, label] of KOREAN_LARGE_UNITS) {
+      const amount = Math.floor(remainder / size);
+      remainder %= size;
+      if (amount) parts.push(`${formatNumber(amount, 0)}${label}`);
+    }
+    if (remainder) {
+      if (remainder % 1000 === 0) parts.push(`${remainder / 1000}천`);
+      else if (remainder % 100 === 0) parts.push(`${remainder / 100}백`);
+      else if (remainder % 10 === 0) parts.push(`${remainder / 10}십`);
+      else parts.push(formatNumber(remainder, 0));
+    }
+    return `${parts.join(" ") || "0"}원 (${formatNumber(integer, 0)}원)`;
+  }
+
   function calculateMargin(data) {
     const price = decimal(data.price, "판매가");
     const cost = decimal(data.cost, "원가");
@@ -444,7 +462,7 @@
     if (amount >= 1e18) throw new InputError("금액이 너무 큽니다.");
     const [rate, date] = await latestRate(source, target);
     const formatted = formatNumber(amount * rate, ["KRW", "JPY"].includes(target) ? 0 : 2);
-    const display = target === "KRW" ? `${formatted}원` : target === "USD" ? `$${formatted}` : `${formatted} ${target}`;
+    const display = target === "KRW" ? formatWonDisplay(amount * rate) : target === "USD" ? `$${formatted}` : `${formatted} ${target}`;
     return {result: `${formatted} ${target}`, display, rate: `1 ${source} = ${formatNumber(rate, 6)} ${target}`, date, source, target};
   }
 
