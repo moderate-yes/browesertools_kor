@@ -68,12 +68,23 @@ test("환율 조회를 브라우저 fetch로 처리한다", async () => {
 test("유로와 영국 파운드를 원화로 환산한다", async () => {
   const euro = await tools.runTool("eur-gbp-krw", {amount: "10 euros"});
   const pound = await tools.runTool("eur-gbp-krw", {amount: "10 pounds"});
+  const millionEuro = await tools.runTool("eur-gbp-krw", {amount: "1m 유로"});
+  const millionPound = await tools.runTool("eur-gbp-krw", {amount: "1m 파운드"});
   assert.equal(euro.display, "1만 3,503원 (13,503원)");
   assert.equal(euro.source, "EUR");
   assert.equal(euro.target, "KRW");
   assert.equal(pound.display, "1만 3,503원 (13,503원)");
   assert.equal(pound.source, "GBP");
   assert.equal(pound.target, "KRW");
+  assert.equal(millionEuro.display, "13억 5,025만원 (1,350,250,000원)");
+  assert.equal(millionPound.display, "13억 5,025만원 (1,350,250,000원)");
+});
+
+test("환율 입력에서 k·m·million·billion 단위를 인식한다", async () => {
+  assert.equal((await tools.runTool("currency", {amount: "1m 달러"})).display, "13억 5,025만원 (1,350,250,000원)");
+  assert.equal((await tools.runTool("eur-gbp-krw", {amount: "2k pounds"})).display, "270만 5백원 (2,700,500원)");
+  assert.equal((await tools.runTool("eur-gbp-krw", {amount: "1 million euros"})).display, "13억 5,025만원 (1,350,250,000원)");
+  assert.equal((await tools.runTool("eur-gbp-krw", {amount: "1 billion pounds"})).display, "1조 3,502억 5,000만원 (1,350,250,000,000원)");
 });
 
 test("큰 원화 결과를 한글 단위와 숫자로 함께 표시한다", async () => {
