@@ -3,7 +3,8 @@
  */
 
 const COUNTER_SHEET_NAME = "방문자수";
-const ALLOWED_SITE = "browsertools.kr";
+const PAGEVIEW_SHEET_NAME = "페이지조회";
+const ALLOWED_SITES = ["browsertools.kr", "browserfiletools.net"];
 const SEOUL_TIME_ZONE = "Asia/Seoul";
 
 function doGet(event) {
@@ -17,16 +18,104 @@ function doGet(event) {
 
   let response;
   try {
-    if (parameters.site !== ALLOWED_SITE) {
-      throw new Error("invalid site");
+    if (parameters.site !== "browsertools.kr") throw new Error("invalid site");
+    if (parameters.pageview === "1") {
+      response = recordPageview({
+        event_id: parameters.event_id,
+        site: parameters.site,
+        country: parameters.country,
+        path: parameters.path,
+        referrer: parameters.referrer,
+      });
+    } else {
+      response = updateCounter(parameters.action === "hit");
     }
-    response = updateCounter(parameters.action === "hit");
   } catch (error) {
     response = {ok: false};
   }
 
   return ContentService.createTextOutput(`${callback}(${JSON.stringify(response)});`)
     .setMimeType(ContentService.MimeType.JAVASCRIPT);
+}
+
+function doPost(event) {
+  try {
+    if (!event || !event.postData || event.postData.contents.length > 2048) return json_({ok: false});
+    const input = JSON.parse(event.postData.contents);
+    if (input.action === "pageview") return json_(recordPageview(input));
+    if (input.action === "export") return json_(exportPageviews(input));
+  } catch (error) {
+    return json_({ok: false});
+  }
+  return json_({ok: false});
+}
+
+function json_(value) {
+  return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function recordPageview(input) {
+  const eventId = String(input.event_id || "");
+  const site = String(input.site || "");
+  const country = String(input.country || "UNKNOWN");
+  const path = String(input.path || "");
+  const referrer = String(input.referrer || "Direct / unknown");
+  if (!/^[0-9a-f-]{36}$/i.test(eventId) || !ALLOWED_SITES.includes(site)
+      || !/^(?:EST-[A-Z]{2}|UNKNOWN)$/.test(country)
+      || !/^\/(?!\/)[^?#\r\n\x00-\x1f]{0,299}$/.test(path)) return {ok: false};
+  if (referrer !== "Direct / unknown" && !/^[A-Za-z0-9.-]{1,253}$/.test(referrer)) return {ok: false};
+  const lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  try {
+    const sheet = getPageviewSheet();
+    sheet.appendRow([eventId, new Date(), site, country, path, referrer]);
+    SpreadsheetApp.flush();
+    return {ok: true};
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function exportPageviews(input) {
+  const props = PropertiesService.getScriptProperties();
+  const expected = props.getProperty("LOCAL_SYNC_TOKEN") || "";
+  const supplied = String(input.token || "");
+  if (expected.length < 32 || supplied.length !== expected.length || !constantTimeEquals(supplied, expected)) {
+    return {ok: false};
+  }
+  const after = Math.max(0, Math.floor(Number(input.after) || 0));
+  const sheet = getPageviewSheet();
+  const lastRow = sheet.getLastRow();
+  const firstRow = Math.max(2, after + 1);
+  if (firstRow > lastRow) return {ok: true, records: [], has_more: false};
+  const count = Math.min(1000, lastRow - firstRow + 1);
+  const values = sheet.getRange(firstRow, 1, count, 6).getValues();
+  const records = values.map((row, index) => ({
+    row_id: firstRow + index,
+    timestamp: row[1] instanceof Date ? row[1].toISOString() : new Date(row[1]).toISOString(),
+    site: String(row[2] || ""),
+    country: String(row[3] || "UNKNOWN"),
+    path: String(row[4] || ""),
+    referrer: String(row[5] || "Direct / unknown"),
+  }));
+  return {ok: true, records, has_more: firstRow + count - 1 < lastRow};
+}
+
+function constantTimeEquals(left, right) {
+  let mismatch = 0;
+  for (let index = 0; index < left.length; index++) mismatch |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  return mismatch === 0;
+}
+
+function getPageviewSheet() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = spreadsheet.getSheetByName(PAGEVIEW_SHEET_NAME);
+  if (!sheet) sheet = spreadsheet.insertSheet(PAGEVIEW_SHEET_NAME);
+  if (sheet.getRange("A1").getValue() !== "Event ID") {
+    sheet.getRange("A1:F1").setValues([["Event ID", "수신 시각", "Site", "Country estimate", "Path", "Referrer domain"]]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
 }
 
 function updateCounter(shouldIncrement) {
@@ -59,15 +148,11 @@ function getCounterSheet() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = spreadsheet.getSheetByName(COUNTER_SHEET_NAME);
 
-  if (!sheet) {
-    sheet = spreadsheet.insertSheet(COUNTER_SHEET_NAME);
-  }
-
+  if (!sheet) sheet = spreadsheet.insertSheet(COUNTER_SHEET_NAME);
   if (sheet.getRange("A1").getValue() !== "날짜") {
     sheet.getRange("A1:C1").setValues([["날짜", "오늘", "전체"]]);
     sheet.setFrozenRows(1);
   }
-
   return sheet;
 }
 
@@ -82,9 +167,7 @@ function toDateKey(value, displayValue) {
   }
   const text = String(displayValue || value || "").trim();
   const parts = text.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
-  if (parts) {
-    return `${parts[1]}-${parts[2].padStart(2, "0")}-${parts[3].padStart(2, "0")}`;
-  }
+  if (parts) return `${parts[1]}-${parts[2].padStart(2, "0")}-${parts[3].padStart(2, "0")}`;
   return text;
 }
 
