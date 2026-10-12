@@ -29,6 +29,16 @@ test("영문·한국식 숫자 단위를 양방향 변환한다", async () => {
   assert.equal(korean.primary, "1 billion");
 });
 
+test("SNS 축약 숫자 k·m을 붙여 써도 변환한다", async () => {
+  const thousand = await tools.runTool("english-number", {value: "1k"});
+  assert.equal(thousand.primary, "1,000");
+  assert.equal(thousand.secondary, "1,000");
+
+  const million = await tools.runTool("english-number", {value: "12m"});
+  assert.equal(million.primary, "1,200만");
+  assert.equal(million.secondary, "12,000,000");
+});
+
 test("한글 숫자가 포함된 마진을 계산한다", async () => {
   const result = await tools.runTool("margin", {
     price: "십만원",

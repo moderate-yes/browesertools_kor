@@ -149,7 +149,7 @@
     let direction = data.direction || "auto";
     if (direction === "auto") {
       const text = String(value ?? "").trim().toLowerCase();
-      if (/(?:\b(?:thousand|million|billion|trillion|bn|tn|k|m)\b|사우전드|밀리언|빌리언|트릴리언)/i.test(text)) {
+      if (/(?:\b(?:thousand|million|billion|trillion|bn|tn)\b|[-+]?(?:\d+(?:\.\d*)?|\.\d+)\s*(?:k|m|bn|tn)\b|사우전드|밀리언|빌리언|트릴리언)/i.test(text)) {
         direction = "english_to_korean";
       } else if (/[십백천만억조경]/.test(text)) {
         direction = "korean_to_english";
@@ -159,7 +159,7 @@
         const english = koreanNumberToEnglish(text).english;
         return {number: formatNumber(number), korean, english, direction: "한국식 · 영어식", primary: korean, secondary: english};
       } else {
-        throw new InputError("예: 1 billion, 1빌리언, 10억처럼 입력해 주세요.");
+        throw new InputError("예: 1k, 12m, 1 billion, 1빌리언, 10억처럼 입력해 주세요.");
       }
     }
     if (direction === "english_to_korean") {
