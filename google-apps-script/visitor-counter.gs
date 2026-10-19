@@ -4,7 +4,7 @@
 
 const COUNTER_SHEET_NAME = "방문자수";
 const PAGEVIEW_SHEET_NAME = "페이지조회";
-const ALLOWED_SITES = ["browsertools.kr", "browserfiletools.net"];
+const ALLOWED_SITES = ["browsertools.kr", "browserfiletools.net", "crystalon.kr"];
 const SEOUL_TIME_ZONE = "Asia/Seoul";
 
 function doGet(event) {
@@ -18,7 +18,7 @@ function doGet(event) {
 
   let response;
   try {
-    if (parameters.site !== "browsertools.kr") throw new Error("invalid site");
+    if (!ALLOWED_SITES.includes(String(parameters.site || ""))) throw new Error("invalid site");
     if (parameters.pageview === "1") {
       response = recordPageview({
         event_id: parameters.event_id,
@@ -28,13 +28,13 @@ function doGet(event) {
         referrer: parameters.referrer,
       });
     } else {
-      response = updateCounter(parameters.action === "hit");
+      response = getPageviewCounts(parameters.site);
     }
   } catch (error) {
     response = {ok: false};
   }
 
-  return ContentService.createTextOutput(`${callback}(${JSON.stringify(response)});`)
+  return ContentService.createTextOutput(callback + "(" + JSON.stringify(response) + ");")
     .setMimeType(ContentService.MimeType.JAVASCRIPT);
 }
 
@@ -68,12 +68,35 @@ function recordPageview(input) {
   lock.waitLock(5000);
   try {
     const sheet = getPageviewSheet();
+    const lastRow = sheet.getLastRow();
+    if (lastRow > 1 && sheet.getRange(2, 1, lastRow - 1, 1)
+        .createTextFinder(eventId).matchEntireCell(true).findNext()) {
+      return getPageviewCounts(site);
+    }
     sheet.appendRow([eventId, new Date(), site, country, path, referrer]);
     SpreadsheetApp.flush();
-    return {ok: true};
+    return getPageviewCounts(site);
   } finally {
     lock.releaseLock();
   }
+}
+
+function getPageviewCounts(site) {
+  const sheet = getPageviewSheet();
+  const lastRow = sheet.getLastRow();
+  const todayKey = Utilities.formatDate(new Date(), SEOUL_TIME_ZONE, "yyyy-MM-dd");
+  if (lastRow < 2) return {ok: true, today: 0, total: 0, date: todayKey};
+  const values = sheet.getRange(2, 2, lastRow - 1, 2).getValues();
+  let today = 0;
+  let total = 0;
+  for (const row of values) {
+    const rowSite = String(row[1] || "");
+    if (rowSite !== site) continue;
+    total += 1;
+    if (row[0] instanceof Date
+        && Utilities.formatDate(row[0], SEOUL_TIME_ZONE, "yyyy-MM-dd") === todayKey) today += 1;
+  }
+  return {ok: true, today: today, total: total, date: todayKey};
 }
 
 function exportPageviews(input) {
@@ -93,6 +116,7 @@ function exportPageviews(input) {
   const records = values.map((row, index) => ({
     row_id: firstRow + index,
     timestamp: row[1] instanceof Date ? row[1].toISOString() : new Date(row[1]).toISOString(),
+    date: row[1] instanceof Date ? Utilities.formatDate(row[1], SEOUL_TIME_ZONE, "yyyy-MM-dd") : "",
     site: String(row[2] || ""),
     country: String(row[3] || "UNKNOWN"),
     path: String(row[4] || ""),
@@ -167,7 +191,7 @@ function toDateKey(value, displayValue) {
   }
   const text = String(displayValue || value || "").trim();
   const parts = text.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
-  if (parts) return `${parts[1]}-${parts[2].padStart(2, "0")}-${parts[3].padStart(2, "0")}`;
+  if (parts) return parts[1] + "-" + parts[2].padStart(2, "0") + "-" + parts[3].padStart(2, "0");
   return text;
 }
 

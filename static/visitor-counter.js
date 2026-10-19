@@ -1,140 +1,54 @@
 (function () {
   "use strict";
-
-  const STORAGE_KEY = "dansum-visitor-counted-date";
-  const CALLBACK_PREFIX = "__dansumVisitorCounter";
-
-  function todayInKorea(date = new Date()) {
-    return new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Seoul",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(date);
-  }
-
-  function normalizeCounts(payload) {
-    const today = Number(payload && payload.today);
-    const total = Number(payload && payload.total);
-    if (!payload || payload.ok !== true || !Number.isFinite(today) || !Number.isFinite(total)) {
-      return null;
-    }
-    return {today: Math.max(0, Math.floor(today)), total: Math.max(0, Math.floor(total))};
-  }
+  const CALLBACK_PREFIX = "__sharedPageviewCounter";
 
   function createFooter() {
-    const footer = document.createElement("footer");
+    let footer = document.querySelector(".visitor-counter");
+    if (footer) return footer;
+    footer = document.createElement("footer");
     footer.className = "visitor-counter";
-    footer.setAttribute("aria-label", "방문자 수");
-    footer.innerHTML = [
-      '<span class="visitor-counter__brand">woonhae</span>',
-      '<span class="visitor-counter__counts">',
-      '  <span>Today <strong data-visitor-today>—</strong></span>',
-      '  <span>Total <strong data-visitor-total>—</strong></span>',
-      '</span>',
-    ].join("");
+    footer.setAttribute("aria-label", "페이지 조회 수");
+    footer.innerHTML = '<span class="visitor-counter__brand">woonhae</span>'
+      + '<span class="visitor-counter__counts">'
+      + '<span>오늘 페이지 조회 <strong data-visitor-today>—</strong></span>'
+      + '<span>누적 페이지 조회 <strong data-visitor-total>—</strong></span>'
+      + '</span>';
     document.body.appendChild(footer);
     return footer;
-  }
-
-  function readCountedDate() {
-    try {
-      return window.localStorage.getItem(STORAGE_KEY);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function saveCountedDate(date) {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, date);
-    } catch (error) {
-      // Private browsing may block storage. The displayed count still works.
-    }
-  }
-
-  function requestCounts(endpoint, site, action, onResult) {
-    const callbackName = `${CALLBACK_PREFIX}${Date.now()}${Math.random().toString(36).slice(2)}`;
-    const script = document.createElement("script");
-    const timeout = window.setTimeout(cleanup, 8000);
-
-    function cleanup() {
-      window.clearTimeout(timeout);
-      delete window[callbackName];
-      script.remove();
-    }
-
-    window[callbackName] = function (payload) {
-      cleanup();
-      onResult(normalizeCounts(payload));
-    };
-
-    script.onerror = function () {
-      cleanup();
-      onResult(null);
-    };
-    script.referrerPolicy = "no-referrer";
-    script.src = `${endpoint}?callback=${encodeURIComponent(callbackName)}`
-      + `&site=${encodeURIComponent(site)}&action=${encodeURIComponent(action)}&t=${Date.now()}`;
-    document.head.appendChild(script);
-  }
-
-  function trackPageview(config) {
-    if (typeof navigator.sendBeacon !== "function") return;
-    const path = window.location.pathname.slice(0, 300);
-    let region = "";
-    try {
-      region = new Intl.Locale(navigator.language || "").region || "";
-    } catch (error) {
-      region = "";
-    }
-    const country = /^[A-Z]{2}$/.test(region) ? `EST-${region}` : "UNKNOWN";
-    let referrer = "";
-    try {
-      referrer = document.referrer ? new URL(document.referrer).hostname : "";
-    } catch (error) {
-      referrer = "";
-    }
-    const eventId = typeof crypto.randomUUID === "function"
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const payload = JSON.stringify({
-      action: "pageview",
-      event_id: eventId,
-      site: config.site || window.location.hostname,
-      country,
-      path,
-      referrer,
-    });
-    navigator.sendBeacon(config.endpoint, new Blob([payload], {type: "text/plain;charset=UTF-8"}));
   }
 
   function start() {
     const footer = createFooter();
     const config = window.DANSUM_VISITOR_COUNTER || {};
-    if (!/^https:\/\/script\.google\.com\/macros\/s\//.test(config.endpoint || "")) {
-      return;
-    }
-
-    trackPageview(config);
-    const today = todayInKorea();
-    const action = readCountedDate() === today ? "read" : "hit";
-    requestCounts(config.endpoint, config.site || "browsertools.kr", action, function (counts) {
-      if (!counts) {
-        return;
-      }
-      footer.querySelector("[data-visitor-today]").textContent = counts.today.toLocaleString("ko-KR");
-      footer.querySelector("[data-visitor-total]").textContent = counts.total.toLocaleString("ko-KR");
-      if (action === "hit") {
-        saveCountedDate(today);
-      }
-    });
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(config.endpoint || "")) return;
+    const callback = `${CALLBACK_PREFIX}${Date.now()}${Math.random().toString(36).slice(2)}`;
+    const script = document.createElement("script");
+    let finished = false;
+    const cleanup = () => { if (finished) return; finished = true; clearTimeout(timeout); delete window[callback]; script.remove(); };
+    const timeout = setTimeout(cleanup, 10000);
+    window[callback] = payload => {
+      cleanup();
+      if (!payload || payload.ok !== true) return;
+      const today = Number(payload.today), total = Number(payload.total);
+      if (!Number.isFinite(today) || !Number.isFinite(total)) return;
+      footer.querySelector("[data-visitor-today]").textContent = today.toLocaleString("ko-KR");
+      footer.querySelector("[data-visitor-total]").textContent = total.toLocaleString("ko-KR");
+    };
+    script.onerror = cleanup;
+    script.referrerPolicy = "no-referrer";
+    const countryRegion = (() => { try { return new Intl.Locale(navigator.language || "").region || ""; } catch (_) { return ""; } })();
+    const country = /^[A-Z]{2}$/.test(countryRegion) ? `EST-${countryRegion}` : "UNKNOWN";
+    const referrer = (() => { try { return document.referrer ? new URL(document.referrer).hostname : ""; } catch (_) { return ""; } })();
+    const random = new Uint8Array(16);
+    crypto.getRandomValues(random);
+    random[6] = (random[6] & 0x0f) | 0x40; random[8] = (random[8] & 0x3f) | 0x80;
+    const eventId = [...random].map((v, i) => ([4, 6, 8, 10].includes(i) ? "-" : "") + v.toString(16).padStart(2, "0")).join("");
+    const params = new URLSearchParams({callback, site: config.site || location.hostname, pageview: "1",
+      event_id: eventId, country, path: location.pathname.slice(0, 300), referrer, t: String(Date.now())});
+    script.src = `${config.endpoint}?${params}`;
+    document.head.appendChild(script);
   }
 
-  window.DansumVisitorCounter = Object.freeze({todayInKorea, normalizeCounts});
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, {once: true});
-  } else {
-    start();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, {once: true});
+  else start();
 })();
